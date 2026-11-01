@@ -8,14 +8,22 @@
   <name>data-sort-app</name>
   <url>http://maven.apache.org</url>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.release>21</maven.compiler.release>
+  </properties>
+
   <dependencies>
+    <!-- Source: https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>5.10.2</version>
+      <version>6.1.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
 
   <build>
     <plugins>
