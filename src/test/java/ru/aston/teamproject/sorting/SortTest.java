@@ -20,6 +20,7 @@ class SortTest {
     void setUp() {
         context = new SortContext<>();
     }
+
     private List<User> createDefaultUsers() {
         List<User> users = new ArrayList<>();
         users.add(User.builder().setNickname("Zack").setEmail("zack@mail.com").setPassword("pass1").build());
@@ -33,7 +34,7 @@ class SortTest {
         context.setStrategy(new BubbleSort<>());
         List<User> users = createDefaultUsers();
 
-        context.doSort(users);
+        context.handle(users);
 
         assertEquals("Alice", users.get(0).getNickname());
         assertEquals("Bob", users.get(1).getNickname());
@@ -47,7 +48,7 @@ class SortTest {
 
         Comparator<User> byEmailDesc = (u1, u2) -> u2.getEmail().compareTo(u1.getEmail());
 
-        context.doSort(users, byEmailDesc);
+        context.handle(users, byEmailDesc);
 
         assertEquals("zack@mail.com", users.get(0).getEmail());
         assertEquals("bob@mail.com", users.get(1).getEmail());
@@ -59,7 +60,7 @@ class SortTest {
         context.setStrategy(new SelectionSort<>());
         List<User> users = createDefaultUsers();
 
-        context.doSort(users);
+        context.handle(users);
 
         assertEquals("Alice", users.get(0).getNickname());
         assertEquals("Bob", users.get(1).getNickname());
@@ -77,7 +78,7 @@ class SortTest {
         List<User> users = new ArrayList<>(List.of(u1, u2, u3));
 
         Comparator<User> byIdDesc = (a, b) -> Integer.compare(b.getId(), a.getId());
-        context.doSort(users, byIdDesc);
+        context.handle(users, byIdDesc);
 
         assertEquals(u3.getId(), users.get(0).getId());
         assertEquals(u2.getId(), users.get(1).getId());
@@ -90,7 +91,7 @@ class SortTest {
         List<User> users = createDefaultUsers();
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
-            context.doSort(users);
+            context.handle(users);
         });
 
         assertTrue(ex.getMessage().contains("[Exception]: Стратегия сортировки не установлена."));

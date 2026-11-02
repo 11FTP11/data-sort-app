@@ -1,6 +1,6 @@
 package ru.aston.teamproject.userbuilder;
 
-public class User implements Comparable<User>{
+public class User implements Comparable<User> {
     private final String nickname;
     private final String password;
     private final String email;
@@ -17,20 +17,31 @@ public class User implements Comparable<User>{
         return new UserBuilder();
     }
 
-    public String getNickname() { return nickname; }
-    public String getPassword() { return password; }
-    public String getEmail() { return email; }
-    public int getId() { return id; }
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getId() {
+        return id;
+    }
 
     @Override
-    public int compareTo(User other){
+    public int compareTo(User other) {
         int nicknameComparison = this.nickname.compareTo(other.nickname);
-        if (nicknameComparison != 0){
+        if (nicknameComparison != 0) {
             return nicknameComparison;
         }
 
         int emailComparison = this.email.compareTo(other.email);
-        if (emailComparison != 0){
+        if (emailComparison != 0) {
             return emailComparison;
         }
 
