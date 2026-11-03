@@ -4,22 +4,22 @@ import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Objects;
 
-class EntityStorage<E> extends AbstractList<E> {
+public class EntityStorage<E extends Comparable<E>> extends AbstractList<E> {
     private static final int DEFAULT_CAPACITY = 10;
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
-    
+
     private Object[] data;
     private int size = 0;
     
     public EntityStorage() {
         this.data = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
     }
-    
+
     @Override
     public int size() {
         return this.size;
     }
-    
+
     private Object[] grow(int minCapacity) {
         int oldCapacity = this.data.length;
         if (oldCapacity > 0 || data != DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
@@ -29,13 +29,13 @@ class EntityStorage<E> extends AbstractList<E> {
             return this.data = new Object[Math.max(DEFAULT_CAPACITY, minCapacity)];
         }
     }
-    
+
     @Override
     public boolean add(E e) {
         add(e, this.data, this.size());
         return true;
     }
-    
+
     private void add(E el, Object[] arrRef, int size) {
         if (size == arrRef.length)
             arrRef = grow();
@@ -68,7 +68,7 @@ class EntityStorage<E> extends AbstractList<E> {
         Objects.checkIndex(index, this.size);
         E old = accessElement(index);
         this.data[index] = element;
-        
+
         return old;
     }
 
@@ -82,7 +82,7 @@ class EntityStorage<E> extends AbstractList<E> {
         System.arraycopy(data, index + 1, data, index, size - index - 1);
         data[--size] = null;
         this.size = size;
-        
+
         return old;
     }
 
@@ -90,13 +90,13 @@ class EntityStorage<E> extends AbstractList<E> {
     private E accessElement(int index) {
         return (E) this.data[index];
     }
-    
+
     @Override
     public E get(int index) {
         Objects.checkIndex(index, this.size);
         return accessElement(index);
     }
-    
+
     private Object[] grow() {
         return grow(this.size + 1);
     }
