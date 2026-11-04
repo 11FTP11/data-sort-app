@@ -1,5 +1,9 @@
 package ru.aston.teamproject.entities;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+@JsonDeserialize(builder = User.UserBuilder.class)
 public class User {
     private final String nickname;
     private final String password;
@@ -21,7 +25,8 @@ public class User {
     public String getPassword() { return password; }
     public String getEmail() { return email; }
     public int getId() { return id; }
-
+    
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class UserBuilder {
         String nickname;
         String password;
