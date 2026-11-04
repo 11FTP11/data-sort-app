@@ -17,28 +17,49 @@ class SortTest {
     private SortContext<User> context;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         context = new SortContext<>();
+        try {
+            java.lang.reflect.Field field = User.UserBuilder.class.getDeclaredField("idCounter");
+            field.setAccessible(true);
+            field.setInt(null, 0);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<User> createDefaultUsers() {
         List<User> users = new ArrayList<>();
         users.add(User.builder().setNickname("Zack").setEmail("zack@mail.com").setPassword("pass1").build());
+        users.add(User.builder().setNickname("Constantin").setEmail("constantin@mail.com").setPassword("pass8").build());
         users.add(User.builder().setNickname("Alice").setEmail("alice@mail.com").setPassword("pass2").build());
         users.add(User.builder().setNickname("Bob").setEmail("bob@mail.com").setPassword("pass3").build());
+        users.add(User.builder().setNickname("Alex").setEmail("alex@mail.com").setPassword("pass4").build());
+        users.add(User.builder().setNickname("Peter").setEmail("peter@mail.com").setPassword("pass5").build());
+        users.add(User.builder().setNickname("Pol").setEmail("pol@mail.com").setPassword("pass6").build());
+        users.add(User.builder().setNickname("John").setEmail("john@mail.com").setPassword("pass7").build());
         return users;
+    }
+
+    /*!!!!!!!!!!!!!!!ПЕРЕД РЕЛИЗОМ УБРАТЬ ЭТОТ МЕТОД!!!!!!!!!!!!!!!!!!*/
+    private static void printUsers(List<User> users) {
+        users.forEach(user -> System.out.printf(
+                "login:\t%s\t | Email:\t%s\t | id:\t%d%n",
+                user.getNickname(),
+                user.getEmail(),
+                user.getId()
+        ));
     }
 
     @Test
     void testBubbleSort_DefaultComparable() {
         context.setStrategy(new BubbleSort<>());
+
         List<User> users = createDefaultUsers();
-
         context.handle(users);
-
-        assertEquals("Alice", users.get(0).getNickname());
-        assertEquals("Bob", users.get(1).getNickname());
-        assertEquals("Zack", users.get(2).getNickname());
+        assertEquals("Alex", users.get(0).getNickname());
+        assertEquals("Alice", users.get(1).getNickname());
+        assertEquals("Bob", users.get(2).getNickname());
     }
 
     @Test
@@ -51,9 +72,25 @@ class SortTest {
         context.handle(users, byEmailDesc);
 
         assertEquals("zack@mail.com", users.get(0).getEmail());
-        assertEquals("bob@mail.com", users.get(1).getEmail());
-        assertEquals("alice@mail.com", users.get(2).getEmail());
+        assertEquals("pol@mail.com", users.get(1).getEmail());
+        assertEquals("peter@mail.com", users.get(2).getEmail());
     }
+
+    @Test
+    void testBubbleSort_EvenOnly() {
+        List<User> users = createDefaultUsers();
+        BubbleSort<User> sorter = new BubbleSort<>();
+        sorter.sort(users); //Сортируем по никнейму, чтобы id были не по порядку.
+        sorter.sortEvenOnly(users, User::getId);
+        assertEquals(5, users.get(0).getId());
+        assertEquals(3, users.get(1).getId());
+        assertEquals(2, users.get(2).getId());
+        assertEquals(4, users.get(3).getId());
+        assertEquals(6, users.get(4).getId());
+        assertEquals(8, users.get(5).getId());
+
+    }
+
 
     @Test
     void testSelectionSort_DefaultComparable() {
@@ -62,9 +99,10 @@ class SortTest {
 
         context.handle(users);
 
-        assertEquals("Alice", users.get(0).getNickname());
-        assertEquals("Bob", users.get(1).getNickname());
-        assertEquals("Zack", users.get(2).getNickname());
+        assertEquals("Alex", users.get(0).getNickname());
+        assertEquals("Alice", users.get(1).getNickname());
+        assertEquals("Bob", users.get(2).getNickname());
+        assertEquals("Zack", users.get(7).getNickname());
     }
 
     @Test
@@ -85,6 +123,24 @@ class SortTest {
         assertEquals(u1.getId(), users.get(2).getId());
     }
 
+    @Test
+    void testSelectionSort_EvenOnly() {
+        List<User> users = createDefaultUsers();
+        SelectionSort<User> sorter = new SelectionSort<>();
+
+        sorter.sort(users);
+
+        sorter.sortEvenOnly(users, User::getId);
+
+        assertEquals(5, users.get(0).getId());
+        assertEquals(3, users.get(1).getId());
+        assertEquals(2, users.get(2).getId());
+        assertEquals(4, users.get(3).getId());
+        assertEquals(6, users.get(4).getId());
+        assertEquals(8, users.get(5).getId());
+        assertEquals(7, users.get(6).getId());
+        assertEquals(1, users.get(7).getId());
+    }
 
     @Test
     void testSortWithoutStrategy_ShouldThrowException() {
