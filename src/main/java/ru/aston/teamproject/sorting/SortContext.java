@@ -1,27 +1,24 @@
 package ru.aston.teamproject.sorting;
 
-import java.util.Comparator;
-import java.util.List;
+import ru.aston.teamproject.collections.EntityStorage;
+import ru.aston.teamproject.contexts.Context;
+import ru.aston.teamproject.strategies.Strategy;
 
-public class SortContext<T> {
+public class SortContext<E extends Comparable<E>> implements Context<E> {
     private final String ERROR_MESSAGE = "[Exception]: Стратегия сортировки не установлена.";
-    private SortStrategy<T> strategy;
 
-    public void setStrategy(SortStrategy<T> strategy) {
+    private Strategy<E> strategy;
+
+    @Override
+    public void setStrategy(Strategy<E> strategy) {
         this.strategy = strategy;
     }
 
-    public void handle(List<T> data) {
+    @Override
+    public void handle(EntityStorage<E> data) {
         if (strategy == null) {
             throw new IllegalStateException(ERROR_MESSAGE);
         }
-        strategy.sort(data);
-    }
-
-    public void handle(List<T> data, Comparator<T> comparator) {
-        if (strategy == null) {
-            throw new IllegalStateException(ERROR_MESSAGE);
-        }
-        strategy.sort(data, comparator);
+        strategy.execute(data);
     }
 }
