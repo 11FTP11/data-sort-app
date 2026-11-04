@@ -1,4 +1,4 @@
-package ru.aston.teamproject.userbuilder;
+package ru.aston.teamproject.entities;
 
 public class User implements Comparable<User> {
     private final String nickname;

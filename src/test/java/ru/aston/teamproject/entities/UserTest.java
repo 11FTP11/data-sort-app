@@ -1,9 +1,9 @@
-package ru.aston.teamproject.userbuilder;
+package ru.aston.teamproject.entities;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserTest {
+class UserTest {
 
     @Test
     void testCorrectCreation() {
