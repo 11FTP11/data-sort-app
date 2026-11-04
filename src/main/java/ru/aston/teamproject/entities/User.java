@@ -4,13 +4,13 @@ public class User implements Comparable<User> {
     private final String nickname;
     private final String password;
     private final String email;
-    private final int id;
+    private final int scores;
 
     User(UserBuilder builder) {
         this.nickname = builder.nickname;
         this.password = builder.password;
         this.email = builder.email;
-        this.id = builder.id;
+        this.scores = builder.scores;
     }
 
     public static UserBuilder builder() {
@@ -29,8 +29,8 @@ public class User implements Comparable<User> {
         return email;
     }
 
-    public int getId() {
-        return id;
+    public int getScores() {
+        return scores;
     }
 
     @Override
@@ -45,15 +45,14 @@ public class User implements Comparable<User> {
             return emailComparison;
         }
 
-        return Integer.compare(this.id, other.id);
+        return Integer.compare(this.scores, other.scores);
     }
 
     public static class UserBuilder {
         String nickname;
         String password;
         String email;
-        private static int idCounter = 0;
-        int id;
+        int scores;
 
         public UserBuilder setNickname(String nickname) {
             if (nickname == null || nickname.isBlank()) {
@@ -82,8 +81,15 @@ public class User implements Comparable<User> {
             return this;
         }
 
+        public UserBuilder setScores(Integer scores) {
+            if (scores == null) {
+                throw new IllegalArgumentException("Scores must not be null or empty");
+            }
+            this.scores = Math.clamp(scores, 0, 100);
+            return this;
+        }
+
         public User build() {
-            this.id = ++idCounter;
             return new User(this);
         }
     }

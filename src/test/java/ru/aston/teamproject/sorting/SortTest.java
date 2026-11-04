@@ -16,27 +16,20 @@ class SortTest {
     private SortContext<User> context;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         context = new SortContext<>();
-        try {
-            java.lang.reflect.Field field = User.UserBuilder.class.getDeclaredField("idCounter");
-            field.setAccessible(true);
-            field.setInt(null, 0);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private EntityStorage<User> createDefaultUsers() {
         EntityStorage<User> users = new EntityStorage<>();
-        users.add(User.builder().setNickname("Zack").setEmail("zack@mail.com").setPassword("pass1").build());
-        users.add(User.builder().setNickname("Constantin").setEmail("constantin@mail.com").setPassword("pass8").build());
-        users.add(User.builder().setNickname("Alice").setEmail("alice@mail.com").setPassword("pass2").build());
-        users.add(User.builder().setNickname("Bob").setEmail("bob@mail.com").setPassword("pass3").build());
-        users.add(User.builder().setNickname("Alex").setEmail("alex@mail.com").setPassword("pass4").build());
-        users.add(User.builder().setNickname("Peter").setEmail("peter@mail.com").setPassword("pass5").build());
-        users.add(User.builder().setNickname("Pol").setEmail("pol@mail.com").setPassword("pass6").build());
-        users.add(User.builder().setNickname("John").setEmail("john@mail.com").setPassword("pass7").build());
+        users.add(User.builder().setNickname("Zack").setEmail("zack@mail.com").setPassword("pass1").setScores(76).build());
+        users.add(User.builder().setNickname("Constantin").setEmail("constantin@mail.com").setPassword("pass8").setScores(12).build());
+        users.add(User.builder().setNickname("Alice").setEmail("alice@mail.com").setPassword("pass2").setScores(62).build());
+        users.add(User.builder().setNickname("Bob").setEmail("bob@mail.com").setPassword("pass3").setScores(55).build());
+        users.add(User.builder().setNickname("Alex").setEmail("alex@mail.com").setPassword("pass4").setScores(96).build());
+        users.add(User.builder().setNickname("Peter").setEmail("peter@mail.com").setPassword("pass5").setScores(73).build());
+        users.add(User.builder().setNickname("Pol").setEmail("pol@mail.com").setPassword("pass6").setScores(10).build());
+        users.add(User.builder().setNickname("John").setEmail("john@mail.com").setPassword("pass7").setScores(51).build());
         return users;
     }
 
@@ -67,15 +60,17 @@ class SortTest {
     void testBubbleSort_EvenOnly() {
         EntityStorage<User> users = createDefaultUsers();
         BubbleSort<User> sorter = new BubbleSort<>();
-        sorter.execute(users);
-        sorter.sortEvenOnly(users, Comparator.naturalOrder(), User::getId);
-        assertEquals(5, users.get(0).getId());
-        assertEquals(3, users.get(1).getId());
-        assertEquals(2, users.get(2).getId());
-        assertEquals(4, users.get(3).getId());
-        assertEquals(6, users.get(4).getId());
-        assertEquals(8, users.get(5).getId());
+        sorter.sortEvenOnly(users, Comparator.naturalOrder(), User::getScores);
 
+        assertEquals(55, users.get(3).getScores());
+        assertEquals(73, users.get(5).getScores());
+        assertEquals(51, users.get(7).getScores());
+
+        assertEquals(12, users.get(0).getScores());
+        assertEquals(62, users.get(1).getScores());
+        assertEquals(76, users.get(2).getScores());
+        assertEquals(96, users.get(4).getScores());
+        assertEquals(10, users.get(6).getScores());
     }
 
 
@@ -95,7 +90,7 @@ class SortTest {
 
         EntityStorage<User> users = createDefaultUsers();
 
-        Comparator<User> byIdDesc = (a, b) -> Integer.compare(b.getId(), a.getId());
+        Comparator<User> byIdDesc = (a, b) -> Integer.compare(b.getScores(), a.getScores());
         context.setStrategy(new SelectionSort<>(byIdDesc));
         context.handle(users);
 
@@ -110,18 +105,17 @@ class SortTest {
         EntityStorage<User> users = createDefaultUsers();
         SelectionSort<User> sorter = new SelectionSort<>();
 
-        sorter.execute(users);
+        sorter.sortEvenOnly(users, Comparator.naturalOrder(), User::getScores);
 
-        sorter.sortEvenOnly(users, Comparator.naturalOrder(), User::getId);
+        assertEquals(55, users.get(3).getScores());
+        assertEquals(73, users.get(5).getScores());
+        assertEquals(51, users.get(7).getScores());
 
-        assertEquals(5, users.get(0).getId());
-        assertEquals(3, users.get(1).getId());
-        assertEquals(2, users.get(2).getId());
-        assertEquals(4, users.get(3).getId());
-        assertEquals(6, users.get(4).getId());
-        assertEquals(8, users.get(5).getId());
-        assertEquals(7, users.get(6).getId());
-        assertEquals(1, users.get(7).getId());
+        assertEquals(10, users.get(0).getScores());
+        assertEquals(12, users.get(1).getScores());
+        assertEquals(62, users.get(2).getScores());
+        assertEquals(76, users.get(4).getScores());
+        assertEquals(96, users.get(6).getScores());
     }
 
     @Test

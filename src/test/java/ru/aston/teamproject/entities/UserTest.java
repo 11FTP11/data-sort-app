@@ -16,7 +16,7 @@ class UserTest {
         assertEquals("alice", user.getNickname());
         assertEquals("secret123", user.getPassword());
         assertEquals("alice@example.com", user.getEmail());
-        assertEquals(1, user.getId());
+        assertEquals(1, user.getScores());
     }
 
     @Test
@@ -63,6 +63,6 @@ class UserTest {
     void testAutoIncrementId() {
         User u1 = User.builder().setNickname("u1").setPassword("p").setEmail("u1@x.com").build();
         User u2 = User.builder().setNickname("u2").setPassword("p").setEmail("u2@x.com").build();
-        assertTrue(u2.getId() > u1.getId());
+        assertTrue(u2.getScores() > u1.getScores());
     }
 }
