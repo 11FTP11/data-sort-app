@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SortTest {
 
-    private SortContext<User> context;
+    private UserSortContext<User> context;
 
     @BeforeEach
     void setUp() {
-        context = new SortContext<>();
+        context = new UserSortContext<>();
     }
 
     private EntityStorage<User> createDefaultUsers() {
@@ -94,10 +94,10 @@ class SortTest {
         context.setStrategy(new SelectionSort<>(byIdDesc));
         context.handle(users);
 
-        assertEquals("John", users.get(0).getNickname());
-        assertEquals("Pol", users.get(1).getNickname());
+        assertEquals("Alex", users.get(0).getNickname());
+        assertEquals("Zack", users.get(1).getNickname());
         assertEquals("Peter", users.get(2).getNickname());
-        assertEquals("Zack", users.get(7).getNickname());
+        assertEquals("Pol", users.get(7).getNickname());
     }
 
     @Test

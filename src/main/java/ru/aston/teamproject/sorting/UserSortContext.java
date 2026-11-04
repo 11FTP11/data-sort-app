@@ -4,8 +4,7 @@ import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.contexts.Context;
 import ru.aston.teamproject.strategies.Strategy;
 
-public class SortContext<E extends Comparable<E>> implements Context<E> {
-    private final String ERROR_MESSAGE = "[Exception]: Стратегия сортировки не установлена.";
+public class UserSortContext<E extends Comparable<E>> implements Context<E> {
 
     private Strategy<E> strategy;
 
@@ -17,6 +16,7 @@ public class SortContext<E extends Comparable<E>> implements Context<E> {
     @Override
     public void handle(EntityStorage<E> data) {
         if (strategy == null) {
+            String ERROR_MESSAGE = "[Exception]: Стратегия сортировки не установлена.";
             throw new IllegalStateException(ERROR_MESSAGE);
         }
         strategy.execute(data);
