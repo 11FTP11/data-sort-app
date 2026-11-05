@@ -1,7 +1,8 @@
-package ru.aston.teamproject.sorting.algorithms;
+package ru.aston.teamproject.strategies.sorting.algorithms;
 
 import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.strategies.Strategy;
+import ru.aston.teamproject.strategies.sorting.EvenSortHelper;
 
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
@@ -37,26 +38,8 @@ public class BubbleSort<E extends Comparable<E>> implements Strategy<E> {
     }
 
     public void sortEvenOnly(EntityStorage<E> data, Comparator<Integer> intComparator, ToIntFunction<E> numberExtractor) {
-        int n = data.size();
-        boolean swapped;
-        for (int i = 0; i < n - 1; i++) {
-            swapped = false;
-            for (int j = 0; j < n - 1 - i; j++) {
-                E current = data.get(j);
-                E next = data.get(j + 1);
-
-                int currentNumber = numberExtractor.applyAsInt(current);
-                int nextNumber = numberExtractor.applyAsInt(next);
-
-                if ((currentNumber & 1) == 0 && (nextNumber & 1) == 0) {
-                    if (intComparator.compare(currentNumber, nextNumber) > 0) {
-                        data.set(j, next);
-                        data.set(j + 1, current);
-                        swapped = true;
-                    }
-                }
-            }
-            if (!swapped) break;
-        }
+        Comparator<E> evenComparator = (e1, e2) -> intComparator.compare(numberExtractor.applyAsInt(e1), numberExtractor.applyAsInt(e2));
+        BubbleSort<E> evenSorter = new BubbleSort<>(evenComparator);
+        EvenSortHelper.sortEvenOnly(data, evenSorter, intComparator, numberExtractor);
     }
 }

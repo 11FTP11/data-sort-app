@@ -1,7 +1,7 @@
 package ru.aston.teamproject.storagehandlers;
 
 import ru.aston.teamproject.collections.EntityStorage;
-import ru.aston.teamproject.contexts.EntityContext;
+import ru.aston.teamproject.strategies.contexts.EntityContext;
 import ru.aston.teamproject.strategies.WriteJsonFile;
 import ru.aston.teamproject.strategies.WriteOutput;
 

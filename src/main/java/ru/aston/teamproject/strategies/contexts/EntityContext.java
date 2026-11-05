@@ -1,4 +1,4 @@
-package ru.aston.teamproject.contexts;
+package ru.aston.teamproject.strategies.contexts;
 
 import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.strategies.Strategy;
@@ -14,7 +14,7 @@ public class EntityContext<E extends Comparable<E>> implements Context<E> {
 
     @Override
     public void handle(EntityStorage<E> storage) {
-        Objects.requireNonNull(this.strategy, "Cтратегия не была установлена в контекст");
+        Objects.requireNonNull(this.strategy, "[ERR]: Стратегия сортировки не установлена.");
         strategy.execute(storage);
     }
 }
