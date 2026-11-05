@@ -26,9 +26,6 @@ public class QuickSort<E extends Comparable<E>> implements Strategy<E> {
         if (data.size() <= 1) {
             return;
         }
-
-        Object[] array = data.toArray();
-
         quickSort(data, 0, data.size() - 1);
     }
 

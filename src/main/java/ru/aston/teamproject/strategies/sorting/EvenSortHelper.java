@@ -15,22 +15,15 @@ public class EvenSortHelper {
             ToIntFunction<E> numberExtractor) {
 
         EntityStorage<E> evenStorage = new EntityStorage<>();
-        for (int i = 0; i < data.size(); i++) {
-            E element = data.get(i);
-            if ((numberExtractor.applyAsInt(element) & 1) == 0) {
-                evenStorage.add(element);
-            }
-        }
+        data.stream()
+                .filter(e -> (numberExtractor.applyAsInt(e) & 1) == 0)
+                .forEach(evenStorage::add);
 
         sorter.execute(evenStorage);
 
-        int evenIndex = 0;
-        for (int i = 0; i < data.size(); i++) {
-            E element = data.get(i);
-            if ((numberExtractor.applyAsInt(element) & 1) == 0) {
-                data.set(i, evenStorage.get(evenIndex));
-                evenIndex++;
-            }
-        }
+        int[] evenIndex = {0};
+        java.util.stream.IntStream.range(0, data.size())
+                .filter(i -> (numberExtractor.applyAsInt(data.get(i)) & 1) == 0)
+                .forEach(i -> data.set(i, evenStorage.get(evenIndex[0]++)));
     }
 }

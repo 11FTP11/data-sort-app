@@ -16,19 +16,19 @@ public class AppDispatcher {
             routes.get(command).handle();
             return CONTEXT_INVOKE_SUCCESS;
         }
-        
+
         return ROUTE_NOT_FOUND;
     }
 
     public AppDispatcher linkRoute(int id, StorageHandler<?> logic) {
         if (this.routes.containsKey(id)) {
-            throw new IllegalArgumentException(String.format("identifier \"%d\" is alredy registered", id));
+            throw new IllegalArgumentException(String.format("identifier \"%d\" is already registered", id));
         }
 
         Objects.requireNonNull(logic, "Context logic cannot be null");
 
         this.routes.put(id, logic);
-        
+
         return this;
     }
 }

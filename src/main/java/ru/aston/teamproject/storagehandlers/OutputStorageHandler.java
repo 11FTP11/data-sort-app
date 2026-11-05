@@ -22,7 +22,7 @@ public class OutputStorageHandler<E extends Comparable<E>> extends StorageHandle
                 Куда вывести данные?
                 1. Вывести данные на консоль.
                 2. Вывести данные в файл (создать JSON)
-                Выберите опцию (1-2): """);
+                Выберите опцию (1-2):\s""");
 
         EntityContext<E> context = new EntityContext<>();
 

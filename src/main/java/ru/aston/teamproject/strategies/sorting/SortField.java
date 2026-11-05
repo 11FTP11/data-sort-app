@@ -8,4 +8,5 @@ public record SortField<E>(
         Comparator<E> comparator,
         boolean isNumeric,
         ToIntFunction<E> numberExtractor
-) {}
+) {
+}

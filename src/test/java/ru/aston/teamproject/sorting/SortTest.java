@@ -205,7 +205,9 @@ class SortTest {
         assertEquals("Alex", users.get(0).getNickname());
         assertEquals("Alice", users.get(1).getNickname());
     }
-
+    /***===========================***/
+    /***   ПЕРЕД РЕЛИЗОМ УДАЛИТЬ   ***/
+    /***===========================***/
     @Test
     void visualTest_sortStorageHandler() {
         System.out.println("=== НАЧАЛО ВИЗУАЛЬНОГО ТЕСТА ===");
@@ -239,5 +241,6 @@ class SortTest {
         }
     }
 
+    /***===========================***/
 
 }

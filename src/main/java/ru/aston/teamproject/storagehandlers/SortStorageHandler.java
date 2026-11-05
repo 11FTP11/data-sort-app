@@ -57,11 +57,11 @@ public class SortStorageHandler<E extends Comparable<E>> extends StorageHandler<
         boolean isEvenOnly = false;
         if (selectedField.isNumeric()) {
             this.out.print("""
-                    
+                   \s
                     Применить дополнительную сортировку?
                     1. Нет (сортировать всё)
                     2. Да (сортировать только четные значения)
-                    Выберите опцию (1-2): """);
+                    Выберите опцию (1-2):\s""");
             int evenOnlyChoice = readInt();
             isEvenOnly = (evenOnlyChoice == 2);
         }
