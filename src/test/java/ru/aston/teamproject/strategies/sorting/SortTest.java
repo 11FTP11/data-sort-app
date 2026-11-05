@@ -1,4 +1,4 @@
-package ru.aston.teamproject.sorting;
+package ru.aston.teamproject.strategies.sorting;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
