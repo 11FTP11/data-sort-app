@@ -1,7 +1,7 @@
 package ru.aston.teamproject.storagehandlers;
 
 import ru.aston.teamproject.collections.EntityStorage;
-import ru.aston.teamproject.strategies.EntityContext;
+import ru.aston.teamproject.contexts.EntityContext;
 import ru.aston.teamproject.strategies.Strategy;
 
 import ru.aston.teamproject.strategies.sorting.SortField;

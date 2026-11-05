@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.storagehandlers.SortStorageHandler;
-import ru.aston.teamproject.strategies.EntityContext;
+import ru.aston.teamproject.contexts.EntityContext;
 import ru.aston.teamproject.strategies.sorting.algorithms.BubbleSort;
 import ru.aston.teamproject.strategies.sorting.algorithms.QuickSort;
 import ru.aston.teamproject.strategies.sorting.algorithms.SelectionSort;
@@ -59,8 +59,8 @@ class SortTest {
         context.handle(users);
 
         assertEquals("zack@mail.com", users.get(0).getEmail());
-        assertEquals("pol@mail.com", users.get(1).getEmail());
-        assertEquals("peter@mail.com", users.get(2).getEmail());
+        assertEquals("rivsmaster@mail.com", users.get(1).getEmail());
+        assertEquals("pol@mail.com", users.get(2).getEmail());
     }
 
     @Test
@@ -150,8 +150,8 @@ class SortTest {
         context.handle(users);
 
         assertEquals("zack@mail.com", users.get(0).getEmail());
-        assertEquals("pol@mail.com", users.get(1).getEmail());
-        assertEquals("peter@mail.com", users.get(2).getEmail());
+        assertEquals("rivsmaster@mail.com", users.get(1).getEmail());
+        assertEquals("pol@mail.com", users.get(2).getEmail());
         assertEquals("alex@mail.com", users.get(7).getEmail());
     }
 
@@ -179,7 +179,7 @@ class SortTest {
         NullPointerException ex = assertThrows(NullPointerException.class, () -> {
             context.handle(users);
         });
-        assertTrue(ex.getMessage().contains("[ERR]: Стратегия сортировки не установлена."));
+        assertTrue(ex.getMessage().contains("Cтратегия не была установлена в контекст"));
     }
 
 
@@ -205,42 +205,4 @@ class SortTest {
         assertEquals("Alex", users.get(0).getNickname());
         assertEquals("Alice", users.get(1).getNickname());
     }
-    /***===========================***/
-    /***   ПЕРЕД РЕЛИЗОМ УДАЛИТЬ   ***/
-    /***===========================***/
-    @Test
-    void visualTest_sortStorageHandler() {
-        System.out.println("=== НАЧАЛО ВИЗУАЛЬНОГО ТЕСТА ===");
-
-        EntityStorage<User> users = createDefaultUsers();
-        System.out.println("Исходный список:");
-        printStorage(users);
-
-        List<SortField<User>> fields = List.of(
-                new SortField<>("По никнейму", Comparator.comparing(User::getNickname), false, null),
-                new SortField<>("По Email", Comparator.comparing(User::getEmail), false, null),
-                new SortField<>("По баллам", Comparator.comparingInt(User::getScores), true, User::getScores)
-        );
-
-        String simulatedInput = "3\n1\n";
-        Scanner scanner = new Scanner(simulatedInput);
-
-        SortStorageHandler<User> handler = new SortStorageHandler<>(users, scanner, System.out, fields);
-        handler.handle();
-
-        System.out.println("\nРезультат после сортировки (только четные):");
-        printStorage(users);
-
-        System.out.println("=== КОНЕЦ ВИЗУАЛЬНОГО ТЕСТА ===");
-    }
-
-    private void printStorage(EntityStorage<User> storage) {
-        for (int i = 0; i < storage.size(); i++) {
-            User u = storage.get(i);
-            System.out.printf("  %d. %s | Scores: %d%n", i + 1, u.getNickname(), u.getScores());
-        }
-    }
-
-    /***===========================***/
-
 }
