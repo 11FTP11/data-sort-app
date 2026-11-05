@@ -1,33 +1,63 @@
 package ru.aston.teamproject.entities;
 
-public class User {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+@JsonDeserialize(builder = User.UserBuilder.class)
+public class User implements Comparable<User> {
     private final String nickname;
     private final String password;
     private final String email;
-    private final int id;
+    private final int scores;
 
     User(UserBuilder builder) {
         this.nickname = builder.nickname;
         this.password = builder.password;
         this.email = builder.email;
-        this.id = builder.id;
+        this.scores = builder.scores;
     }
 
     public static UserBuilder builder() {
         return new UserBuilder();
     }
 
-    public String getNickname() { return nickname; }
-    public String getPassword() { return password; }
-    public String getEmail() { return email; }
-    public int getId() { return id; }
+    public String getNickname() {
+        return nickname;
+    }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getScores() {
+        return scores;
+    }
+
+    @Override
+    public int compareTo(User other) {
+        int nicknameComparison = this.nickname.compareTo(other.nickname);
+        if (nicknameComparison != 0) {
+            return nicknameComparison;
+        }
+
+        int emailComparison = this.email.compareTo(other.email);
+        if (emailComparison != 0) {
+            return emailComparison;
+        }
+
+        return Integer.compare(this.scores, other.scores);
+    }
+
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class UserBuilder {
         String nickname;
         String password;
         String email;
-        private static int idCounter = 0;
-        int id;
+        int scores;
 
         public UserBuilder setNickname(String nickname) {
             if (nickname == null || nickname.isBlank()) {
@@ -56,9 +86,17 @@ public class User {
             return this;
         }
 
+        public UserBuilder setScores(Integer scores) {
+            if (scores == null) {
+                throw new IllegalArgumentException("Scores must not be null or empty");
+            }
+            this.scores = Math.clamp(scores, 0, 100);
+            return this;
+        }
+
         public User build() {
-            this.id = ++idCounter;
             return new User(this);
         }
     }
+
 }
