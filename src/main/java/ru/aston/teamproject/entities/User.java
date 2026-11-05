@@ -1,5 +1,9 @@
 package ru.aston.teamproject.entities;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+@JsonDeserialize(builder = User.UserBuilder.class)
 public class User implements Comparable<User> {
     private final String nickname;
     private final String password;
@@ -48,6 +52,7 @@ public class User implements Comparable<User> {
         return Integer.compare(this.scores, other.scores);
     }
 
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class UserBuilder {
         String nickname;
         String password;
