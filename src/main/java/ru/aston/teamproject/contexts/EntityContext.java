@@ -2,6 +2,7 @@ package ru.aston.teamproject.contexts;
 
 import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.strategies.Strategy;
+
 import java.util.Objects;
 
 public class EntityContext<E extends Comparable<E>> implements Context<E> {

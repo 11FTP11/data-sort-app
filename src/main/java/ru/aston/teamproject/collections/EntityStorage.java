@@ -10,7 +10,7 @@ public class EntityStorage<E extends Comparable<E>> extends AbstractList<E> {
 
     private Object[] data;
     private int size = 0;
-    
+
     public EntityStorage() {
         this.data = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
     }

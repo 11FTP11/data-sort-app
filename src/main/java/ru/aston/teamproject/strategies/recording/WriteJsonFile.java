@@ -1,10 +1,11 @@
-package ru.aston.teamproject.strategies;
+package ru.aston.teamproject.strategies.recording;
 
 import ru.aston.teamproject.collections.EntityStorage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
+import ru.aston.teamproject.strategies.Strategy;
 
 import java.io.File;
 import java.io.IOException;
