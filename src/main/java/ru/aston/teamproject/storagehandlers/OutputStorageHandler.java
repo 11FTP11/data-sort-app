@@ -1,9 +1,9 @@
 package ru.aston.teamproject.storagehandlers;
 
 import ru.aston.teamproject.collections.EntityStorage;
-import ru.aston.teamproject.strategies.contexts.EntityContext;
-import ru.aston.teamproject.strategies.WriteJsonFile;
-import ru.aston.teamproject.strategies.WriteOutput;
+import ru.aston.teamproject.strategies.EntityContext;
+import ru.aston.teamproject.strategies.recording.WriteJsonFile;
+import ru.aston.teamproject.strategies.recording.WriteOutput;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -7,6 +7,8 @@ import ru.aston.teamproject.strategies.sorting.EvenSortHelper;
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
 
+import static java.util.Collections.swap;
+
 public class BubbleSort<E extends Comparable<E>> implements Strategy<E> {
 
     private final Comparator<E> comparator;
@@ -27,9 +29,7 @@ public class BubbleSort<E extends Comparable<E>> implements Strategy<E> {
             swapped = false;
             for (int j = 0; j < n - 1 - i; j++) {
                 if (comparator.compare(data.get(j), data.get(j + 1)) > 0) {
-                    E temp = data.get(j);
-                    data.set(j, data.get(j + 1));
-                    data.set(j + 1, temp);
+                    swap(data, j, j + 1);
                     swapped = true;
                 }
             }

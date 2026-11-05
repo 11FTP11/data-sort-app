@@ -4,12 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.storagehandlers.SortStorageHandler;
-import ru.aston.teamproject.strategies.contexts.EntityContext;
+import ru.aston.teamproject.strategies.EntityContext;
 import ru.aston.teamproject.strategies.sorting.algorithms.BubbleSort;
 import ru.aston.teamproject.strategies.sorting.algorithms.QuickSort;
 import ru.aston.teamproject.strategies.sorting.algorithms.SelectionSort;
 import ru.aston.teamproject.entities.User;
-
+import ru.aston.teamproject.strategies.sorting.SortField;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Comparator;
@@ -187,10 +187,10 @@ class SortTest {
     void when_sortStorageHandlerStandardSort_then_dataIsSorted() {
         EntityStorage<User> users = createDefaultUsers();
 
-        List<SortStorageHandler.SortField<User>> fields = List.of(
-                new SortStorageHandler.SortField<>("По никнейму", Comparator.comparing(User::getNickname), false, null),
-                new SortStorageHandler.SortField<>("По Email", Comparator.comparing(User::getEmail), false, null),
-                new SortStorageHandler.SortField<>("По баллам", Comparator.comparingInt(User::getScores), true, User::getScores)
+        List<SortField<User>> fields = List.of(
+                new SortField<>("По никнейму", Comparator.comparing(User::getNickname), false, null),
+                new SortField<>("По Email", Comparator.comparing(User::getEmail), false, null),
+                new SortField<>("По баллам", Comparator.comparingInt(User::getScores), true, User::getScores)
         );
 
         String simulatedInput = "1\n1\n";
@@ -214,13 +214,13 @@ class SortTest {
         System.out.println("Исходный список:");
         printStorage(users);
 
-        List<SortStorageHandler.SortField<User>> fields = List.of(
-                new SortStorageHandler.SortField<>("По никнейму", Comparator.comparing(User::getNickname), false, null),
-                new SortStorageHandler.SortField<>("По Email", Comparator.comparing(User::getEmail), false, null),
-                new SortStorageHandler.SortField<>("По баллам", Comparator.comparingInt(User::getScores), true, User::getScores)
+        List<SortField<User>> fields = List.of(
+                new SortField<>("По никнейму", Comparator.comparing(User::getNickname), false, null),
+                new SortField<>("По Email", Comparator.comparing(User::getEmail), false, null),
+                new SortField<>("По баллам", Comparator.comparingInt(User::getScores), true, User::getScores)
         );
 
-        String simulatedInput = "1\n1\n";
+        String simulatedInput = "3\n1\n";
         Scanner scanner = new Scanner(simulatedInput);
 
         SortStorageHandler<User> handler = new SortStorageHandler<>(users, scanner, System.out, fields);

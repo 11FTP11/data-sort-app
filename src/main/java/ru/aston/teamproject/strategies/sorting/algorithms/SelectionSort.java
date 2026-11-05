@@ -7,6 +7,8 @@ import ru.aston.teamproject.strategies.sorting.EvenSortHelper;
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
 
+import static java.util.Collections.swap;
+
 public class SelectionSort<E extends Comparable<E>> implements Strategy<E> {
 
     private final Comparator<E> comparator;
@@ -31,9 +33,7 @@ public class SelectionSort<E extends Comparable<E>> implements Strategy<E> {
             }
 
             if (bestIdx != i) {
-                E temp = data.get(i);
-                data.set(i, data.get(bestIdx));
-                data.set(bestIdx, temp);
+                swap(data, i, bestIdx);
             }
         }
     }

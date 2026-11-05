@@ -7,6 +7,8 @@ import ru.aston.teamproject.strategies.sorting.EvenSortHelper;
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
 
+import static java.util.Collections.swap;
+
 public class QuickSort<E extends Comparable<E>> implements Strategy<E> {
 
     private final Comparator<E> comparator;
@@ -27,42 +29,31 @@ public class QuickSort<E extends Comparable<E>> implements Strategy<E> {
 
         Object[] array = data.toArray();
 
-        quickSort(array, 0, array.length - 1);
-
-        for (int i = 0; i < array.length; i++) {
-            @SuppressWarnings("unchecked")
-            E element = (E) array[i];
-            data.set(i, element);
-        }
+        quickSort(data, 0, data.size() - 1);
     }
 
-    private void quickSort(Object[] array, int low, int high) {
+    private void quickSort(EntityStorage<E> data, int low, int high) {
         if (low < high) {
-            int pivotIndex = partition(array, low, high);
-
-            quickSort(array, low, pivotIndex - 1);
-            quickSort(array, pivotIndex + 1, high);
+            int pivotIndex = partition(data, low, high);
+            quickSort(data, low, pivotIndex - 1);
+            quickSort(data, pivotIndex + 1, high);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private int partition(Object[] array, int low, int high) {
-        E pivot = (E) array[high];
+    private int partition(EntityStorage<E> data, int low, int high) {
+        E pivot = data.get(high);
         int i = (low - 1);
 
         for (int j = low; j < high; j++) {
-            E current = (E) array[j];
+            E current = data.get(j);
+
             if (comparator.compare(current, pivot) <= 0) {
                 i++;
-                Object temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
+                swap(data, i, j);
             }
         }
-        Object temp = array[i + 1];
-        array[i + 1] = array[high];
-        array[high] = temp;
 
+        swap(data, i + 1, high);
         return i + 1;
     }
 

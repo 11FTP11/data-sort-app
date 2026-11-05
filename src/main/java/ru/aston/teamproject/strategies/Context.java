@@ -1,7 +1,6 @@
-package ru.aston.teamproject.strategies.contexts;
+package ru.aston.teamproject.strategies;
 
 import ru.aston.teamproject.collections.EntityStorage;
-import ru.aston.teamproject.strategies.Strategy;
 
 public interface Context<E extends Comparable<E>> {
     void setStrategy(Strategy<E> strategy);

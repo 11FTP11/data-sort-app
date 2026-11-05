@@ -1,9 +1,10 @@
 package ru.aston.teamproject.storagehandlers;
 
 import ru.aston.teamproject.collections.EntityStorage;
-import ru.aston.teamproject.strategies.contexts.EntityContext;
+import ru.aston.teamproject.strategies.EntityContext;
 import ru.aston.teamproject.strategies.Strategy;
 
+import ru.aston.teamproject.strategies.sorting.SortField;
 import ru.aston.teamproject.strategies.sorting.SortType;
 import ru.aston.teamproject.strategies.sorting.algorithms.BubbleSort;
 import ru.aston.teamproject.strategies.sorting.algorithms.QuickSort;
@@ -16,13 +17,6 @@ import java.util.Scanner;
 import java.util.function.ToIntFunction;
 
 public class SortStorageHandler<E extends Comparable<E>> extends StorageHandler<E> {
-
-    public record SortField<E>(
-            String name,
-            Comparator<E> comparator,
-            boolean isNumeric,
-            ToIntFunction<E> numberExtractor
-    ) {}
 
     private final List<SortField<E>> availableFields;
 

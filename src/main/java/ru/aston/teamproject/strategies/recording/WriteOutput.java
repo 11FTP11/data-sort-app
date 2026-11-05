@@ -1,6 +1,7 @@
-package ru.aston.teamproject.strategies;
+package ru.aston.teamproject.strategies.recording;
 
 import ru.aston.teamproject.collections.EntityStorage;
+import ru.aston.teamproject.strategies.Strategy;
 
 import java.io.PrintStream;
 
