@@ -7,7 +7,7 @@ import ru.aston.teamproject.ui.Menu;
 
 import java.util.Scanner;
 
-public class Main {
+public class App {
     public static void main(String[] args) {
         AppDispatcher dispatcher = new AppDispatcher();
 
