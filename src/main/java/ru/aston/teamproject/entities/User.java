@@ -52,6 +52,12 @@ public class User implements Comparable<User> {
         return Integer.compare(this.scores, other.scores);
     }
 
+    @Override
+    public String toString() {
+        return String.format("info %s:\n - password: %s;\n - email: %s\n - scores: %s\n",
+                this.getNickname(), this.getPassword(), this.getEmail(), this.getScores());
+    }
+
     @JsonPOJOBuilder(withPrefix = "set")
     public static class UserBuilder {
         String nickname;

@@ -14,7 +14,11 @@ public class WriteOutput<E extends Comparable<E>> implements Strategy<E> {
 
     @Override
     public void execute(EntityStorage<E> storage) {
-        storage.stream()
-                .forEach(entity -> out.println(entity.toString()));
+        PrintStream out = this.out;
+        if (storage == null || storage.size() == 0) {
+            out.println("Хранилище пустое");
+        } else {
+            storage.stream().forEach(entity -> out.println(entity.toString()));
+        }
     }
 }

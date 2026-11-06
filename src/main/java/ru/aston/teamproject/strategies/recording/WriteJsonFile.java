@@ -13,29 +13,41 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class WriteJsonFile<E extends Comparable<E>> implements Strategy<E> {
-    private final String filename;
+    private static final String DEFAULT_DIRECTORY = "output/";
+    private final File file;
     private final ObjectMapper mapper;
 
     public WriteJsonFile(ObjectMapper mapper, String filename) {
         if (filename == null || filename.isBlank()) {
+
             StringBuilder sb = new StringBuilder();
+            sb.append(DEFAULT_DIRECTORY);
             sb.append("file_");
             sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")));
             sb.append(".json");
 
-            this.filename = sb.toString();
+            this.file = new File(sb.toString());
         } else {
-            this.filename = filename;
+            this.file = new File(filename);
         }
 
         this.mapper = mapper;
     }
 
+    public File getFile() {
+        return this.file;
+    }
+
     @Override
     public void execute(EntityStorage<E> storage) {
+        File parentDir = this.file.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+        
         try {
-            mapper.writeValue(new File(this.filename), storage);
-            System.out.printf("Данные записаны в файл \"%s\"\n", this.filename);
+            mapper.writeValue(this.file, storage);
+            System.out.printf("Данные записаны в файл \"%s\"\n", this.file);
         } catch (DatabindException e) {
             System.err.println("Ошибка структуры данных: " + e.getMessage());
         } catch (StreamWriteException e) {
