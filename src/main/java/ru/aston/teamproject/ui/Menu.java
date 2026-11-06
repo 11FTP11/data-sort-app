@@ -1,13 +1,20 @@
 package ru.aston.teamproject.ui;
 
 import ru.aston.teamproject.AppDispatcher;
+import ru.aston.teamproject.storagehandlers.Description;
 
 public class Menu {
     private final ConsoleUI ui = new ConsoleUI();
     private final AppDispatcher dispatcher;
+    private final Description[] descriptions;
 
-    public Menu(AppDispatcher dispatcher) {
+    public Menu(AppDispatcher dispatcher, Description... descriptions) {
         this.dispatcher = dispatcher;
+        this.descriptions = descriptions;
+
+        for (int i = 0; i < descriptions.length; i++) {
+            dispatcher.linkRoute(i + 1, descriptions[i].handler());
+        }
     }
 
     public void start() {
@@ -16,14 +23,14 @@ public class Menu {
 
         while (isRunning) {
             System.out.println("\n" + "\u001B[1m[ГЛАВНОЕ МЕНЮ]\u001B[0m");
-            System.out.println("1. Ввод данных");
-            System.out.println("2. Вывод данных");
-            System.out.println("3. Выбор метода сортировки");
-            System.out.println("4. Поиск");
+
+            for (int i = 0; i < descriptions.length; i++) {
+                System.out.println((i + 1) + ". " + descriptions[i].text());
+            }
             System.out.println("0. Выход");
             System.out.println("\u001B[36m" + "-".repeat(80) + "\u001B[0m");
 
-            int choice = ui.readInt("Выберите действие: ", 0, 4);
+            int choice = ui.readInt("Выберите действие: ", 0, descriptions.length);
 
             if (choice == 0) {
                 isRunning = false;
@@ -31,7 +38,7 @@ public class Menu {
             } else {
                 int result = dispatcher.resolve(choice);
                 if (result == -1) {
-                    ui.printError("Эта команда еще не реализована командой.");
+                    ui.printError("Неизвестная опция.");
                 }
                 ui.waitForEnter();
             }

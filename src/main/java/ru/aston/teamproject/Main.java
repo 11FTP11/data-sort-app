@@ -1,14 +1,14 @@
 package ru.aston.teamproject;
 
 import ru.aston.teamproject.collections.EntityStorage;
+import ru.aston.teamproject.storagehandlers.Description;
 import ru.aston.teamproject.storagehandlers.StorageHandler;
 import ru.aston.teamproject.ui.Menu;
 
 import java.util.Scanner;
 
-public class App {
+public class Main {
     public static void main(String[] args) {
-
         AppDispatcher dispatcher = new AppDispatcher();
 
         EntityStorage<String> tempStorage = new EntityStorage<>();
@@ -42,12 +42,13 @@ public class App {
             }
         };
 
-        dispatcher.linkRoute(1, stub1)
-                .linkRoute(2, stub2)
-                .linkRoute(3, stub3)
-                .linkRoute(4, stub4);
+        Menu menu = new Menu(dispatcher,
+                new Description("Ввод данных", stub1),
+                new Description("Вывод данных", stub2),
+                new Description("Выбор метода сортировки", stub3),
+                new Description("Поиск", stub4)
+        );
 
-        Menu menu = new Menu(dispatcher);
         menu.start();
     }
 }
