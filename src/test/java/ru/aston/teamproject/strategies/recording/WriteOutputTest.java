@@ -41,4 +41,37 @@ class WriteOutputTest {
 
         assertEquals(expectedNormalized, actualNormalized);
     }
+
+    @Test
+    void when_storageIsEmpty_then_correctlyPrintsFormattedOutput() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(outputStream);
+
+        WriteOutput<User> strategy = new WriteOutput<>(printStream);
+        EntityStorage<User> storage = new EntityStorage<>();
+
+        strategy.execute(storage);
+
+        String expected = "Хранилище пустое" + System.lineSeparator();
+        String actualNormalized = outputStream.toString().replace("\r\n", "\n");
+        String expectedNormalized = expected.replace("\r\n", "\n");
+
+        assertEquals(expectedNormalized, actualNormalized, "Empty storage must be passed");
+    }
+
+    @Test
+    void when_storageIsNull_then_correctlyPrintsFormattedOutput() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(outputStream);
+
+        WriteOutput<User> strategy = new WriteOutput<>(printStream);
+
+        strategy.execute(null);
+
+        String expected = "Хранилище пустое" + System.lineSeparator();
+        String actualNormalized = outputStream.toString().replace("\r\n", "\n");
+        String expectedNormalized = expected.replace("\r\n", "\n");
+
+        assertEquals(expectedNormalized, actualNormalized, "null must be passed");
+    }
 }
