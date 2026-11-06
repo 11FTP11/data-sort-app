@@ -3,12 +3,12 @@ package ru.aston.teamproject.ui;
 import ru.aston.teamproject.AppDispatcher;
 import ru.aston.teamproject.storagehandlers.Description;
 
-public class Menu {
+public class App {
     private final ConsoleUI ui = new ConsoleUI();
     private final AppDispatcher dispatcher;
     private final Description[] descriptions;
 
-    public Menu(AppDispatcher dispatcher, Description... descriptions) {
+    public App(AppDispatcher dispatcher, Description... descriptions) {
         this.dispatcher = dispatcher;
         this.descriptions = descriptions;
 

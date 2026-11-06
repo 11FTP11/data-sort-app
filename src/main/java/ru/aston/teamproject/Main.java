@@ -3,11 +3,11 @@ package ru.aston.teamproject;
 import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.storagehandlers.Description;
 import ru.aston.teamproject.storagehandlers.StorageHandler;
-import ru.aston.teamproject.ui.Menu;
+import ru.aston.teamproject.ui.App;
 
 import java.util.Scanner;
 
-public class App {
+public class Main {
     public static void main(String[] args) {
         AppDispatcher dispatcher = new AppDispatcher();
 
@@ -42,13 +42,13 @@ public class App {
             }
         };
 
-        Menu menu = new Menu(dispatcher,
+        App app = new App(dispatcher,
                 new Description("Ввод данных", stub1),
                 new Description("Вывод данных", stub2),
                 new Description("Выбор метода сортировки", stub3),
                 new Description("Поиск", stub4)
         );
 
-        menu.start();
+        app.start();
     }
 }
