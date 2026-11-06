@@ -2,6 +2,11 @@ package ru.aston.teamproject.entities;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import ru.aston.teamproject.strategies.filling.Fillable;
+
+import java.io.PrintStream;
+import java.util.Random;
+import java.util.Scanner;
 
 @JsonDeserialize(builder = User.UserBuilder.class)
 public class User implements Comparable<User> {
@@ -53,7 +58,12 @@ public class User implements Comparable<User> {
     }
 
     @JsonPOJOBuilder(withPrefix = "set")
-    public static class UserBuilder {
+    public static class UserBuilder implements Fillable<User> {
+
+        private static final String[] NAMES = {"Mark", "Maria", "Ivan", "Olga", "Dmitriy", "Elena", "Denis", "Aleksey", "Arina", "Maxim", "Magomed", "Albert", "Kirill", "Anastasia", "Larisa", "Victoria", "Victor", "Mihail", "Anatoliy", "Oleg", "Karina", "Valentina", "Fatima", "Kerim"};
+        private static final String[] DOMAINS = {"@gmail.com", "@yandex.ru", "@ya.ru", "@mail.ru", "@list.ru", "@bk.ru", "@inbox.ru", "@xmail.ru"};
+        private static final Random RANDOM = new Random();
+
         String nickname;
         String password;
         String email;
@@ -92,6 +102,29 @@ public class User implements Comparable<User> {
             }
             this.scores = Math.clamp(scores, 0, 100);
             return this;
+        }
+
+        @Override
+        public User createRandom() {
+            String name = NAMES[RANDOM.nextInt(NAMES.length)];
+            return this.setNickname(name)
+                    .setPassword("pass" + RANDOM.nextInt(10000))
+                    .setEmail(name.toLowerCase() + RANDOM.nextInt(100) + DOMAINS[RANDOM.nextInt(DOMAINS.length)])
+                    .setScores(RANDOM.nextInt(101))
+                    .build();
+        }
+
+        @Override
+        public User createManual(Scanner in, PrintStream out) {
+            out.print("Введите Nickname: ");
+            this.setNickname(in.nextLine());
+            out.print("Введите Password (мин. 5 символов): ");
+            this.setPassword(in.nextLine());
+            out.print("Введите Email: ");
+            this.setEmail(in.nextLine());
+            out.print("Введите Scores (0-100): ");
+            this.setScores(Integer.parseInt(in.nextLine()));
+            return this.build();
         }
 
         public User build() {

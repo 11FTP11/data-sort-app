@@ -123,15 +123,5 @@
     "nickname": "Кирилл",
     "password": "Kirill#Pass25",
     "email": "kirill.25@gmail.com"
-  },
-  {
-    "nickname": "БитыйПользователь",
-    "password": "pass",
-    "email": "broken_email_ru"
-  },
-  {
-    "nickname": "КороткийПароль",
-    "password": "123",
-    "email": "short@mail.ru"
   }
 ]

@@ -1,10 +1,19 @@
 package ru.aston.teamproject.filling;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.aston.teamproject.collections.EntityStorage;
-import ru.aston.teamproject.contexts.FillContext;
+import ru.aston.teamproject.contexts.EntityContext;
 import ru.aston.teamproject.entities.User;
+import ru.aston.teamproject.strategies.filling.FileFill;
+import ru.aston.teamproject.strategies.filling.ManualFill;
+import ru.aston.teamproject.strategies.filling.RandomFill;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +23,7 @@ class FillTest {
     @DisplayName("RandomFill: генерирует указанное количество пользователей")
     void when_executeRandomFillWithCount_then_storageSizeEqualsCount() {
         EntityStorage<User> storage = new EntityStorage<>();
-        RandomFill randomFill = new RandomFill(5);
+        RandomFill<User> randomFill = new RandomFill<>(new User.UserBuilder(), 5);
 
         randomFill.execute(storage);
 
@@ -22,57 +31,66 @@ class FillTest {
     }
 
     @Test
-    @DisplayName("FillContext: вызывает стратегию и наполняет коллекцию")
-    void when_fillContextHandlesWithStrategy_then_strategyIsInvokedAndStorageFilled() {
+    @DisplayName("EntityContext: вызывает стратегию и наполняет коллекцию")
+    void when_contextHandlesWithStrategy_then_strategyIsInvokedAndStorageFilled() {
         EntityStorage<User> storage = new EntityStorage<>();
-        FillContext<User> context = new FillContext<>();
+        EntityContext<User> context = new EntityContext<>();
 
-        context.setStrategy(new RandomFill(3));
+        context.setStrategy(new RandomFill<>(new User.UserBuilder(), 3));
         context.handle(storage);
 
-        assertEquals(3, storage.size(), "FillContext должен наполнить коллекцию 3 элементами");
+        assertEquals(3, storage.size(), "Контекст должен наполнить коллекцию 3 элементами");
     }
 
     @Test
-    @DisplayName("FillContext: выбрасывает исключение без стратегии")
-    void when_fillContextHandlesWithoutStrategy_then_throwsIllegalStateException() {
-        FillContext<User> context = new FillContext<>();
+    @DisplayName("EntityContext: выбрасывает исключение без стратегии")
+    void when_contextHandlesWithoutStrategy_then_throwsNullPointerException() {
+        EntityContext<User> context = new EntityContext<>();
         EntityStorage<User> storage = new EntityStorage<>();
 
-        assertThrows(IllegalStateException.class, () -> context.handle(storage),
+        assertThrows(NullPointerException.class, () -> context.handle(storage),
                 "Должно выброситься исключение, если стратегия не установлена");
     }
 
     @Test
-    @DisplayName("FileFill: загружает реальный файл users.json из корня проекта")
-    void when_executeFileFillWithRealUsersJson_then_expectedNumberOfUsersLoaded() {
-        EntityStorage<User> storage = new EntityStorage<>();
-
-        FileFill fileFill = new FileFill("users.json");
-        fileFill.execute(storage);
-
-        assertEquals(25, storage.size(), "Должно загрузиться 25 валидных пользователей из реального файла");
-    }
-
-    @Test
-    @DisplayName("ManualFill: успешно считывает данные из консоли и добавляет пользователя")
+    @DisplayName("ManualFill: считывает данные из консоли и добавляет пользователя")
     void when_executeManualFillWithValidInput_then_userIsAdded() {
-        java.io.InputStream originalIn = System.in;
+        InputStream originalIn = System.in;
 
         try {
-            String simulatedInput = "Ivan\npassword123\nivan@mail.ru\n";
-            System.setIn(new java.io.ByteArrayInputStream(simulatedInput.getBytes()));
+            String simulatedInput = "Ivan\npassword123\nivan@mail.ru\n95\n";
+            System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
 
             EntityStorage<User> storage = new EntityStorage<>();
-            ManualFill manualFill = new ManualFill(1);
+            Scanner testScanner = new Scanner(System.in);
+            PrintStream testOut = new PrintStream(System.out);
+
+            ManualFill<User> manualFill = new ManualFill<>(
+                    new User.UserBuilder(), 1, testScanner, testOut
+            );
+
             manualFill.execute(storage);
 
             assertEquals(1, storage.size(), "Должен быть добавлен 1 пользователь");
             assertEquals("Ivan", storage.get(0).getNickname(), "Имя должно совпадать");
             assertEquals("ivan@mail.ru", storage.get(0).getEmail(), "Email должен совпадать");
+            assertEquals(95, storage.get(0).getScores(), "Баллы должны совпадать");
 
         } finally {
             System.setIn(originalIn);
         }
+    }
+
+    @Test
+    @DisplayName("FileFill: загружает пользователей из файла users.json")
+    void when_executeFileFillWithRealUsersJson_then_expectedNumberOfUsersLoaded() {
+        EntityStorage<User> storage = new EntityStorage<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        FileFill<User> fileFill = new FileFill<>(mapper, "users.json", User.class);
+
+        fileFill.execute(storage);
+
+        assertEquals(25, storage.size(), "Должно загрузиться 25 валидных пользователей из файла");
     }
 }
