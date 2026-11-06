@@ -10,9 +10,8 @@ import ru.aston.teamproject.strategies.filling.FileFill;
 import ru.aston.teamproject.strategies.filling.ManualFill;
 import ru.aston.teamproject.strategies.filling.RandomFill;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -92,5 +91,37 @@ class FillTest {
         fileFill.execute(storage);
 
         assertEquals(25, storage.size(), "Должно загрузиться 25 валидных пользователей из файла");
+    }
+
+    @Test
+    @DisplayName("FileFill: загружает данные из файла на диске (абсолютный путь)")
+    void when_executeFileFillWithTempFileOnDisk_then_usersAreLoaded() throws IOException {
+
+        File tempFile = File.createTempFile("test_users", ".json");
+        tempFile.deleteOnExit();
+
+        String jsonContent = """
+                [
+                  {
+                    "nickname": "Fedor",
+                    "password": "diskpass123",
+                    "email": "disk@mail.ru",
+                    "scores": 80
+                  }
+                ]
+                """;
+        Files.writeString(tempFile.toPath(), jsonContent);
+
+        EntityStorage<User> storage = new EntityStorage<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+
+        FileFill<User> fileFill = new FileFill<>(mapper, tempFile.getAbsolutePath(), User.class);
+
+        fileFill.execute(storage);
+
+        assertEquals(1, storage.size(), "Должен загрузиться 1 пользователь с диска");
+        assertEquals("Fedor", storage.get(0).getNickname(), "Имя пользователя должно совпадать");
+        assertEquals(80, storage.get(0).getScores(), "Баллы должны совпадать");
     }
 }
