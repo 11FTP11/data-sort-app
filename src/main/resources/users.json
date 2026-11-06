@@ -1,0 +1,127 @@
+[
+  {
+    "nickname": "Марк",
+    "password": "Mark!2024xyz",
+    "email": "mark.1@gmail.com"
+  },
+  {
+    "nickname": "Мария",
+    "password": "M@ria_Secure99",
+    "email": "maria.2@yandex.ru"
+  },
+  {
+    "nickname": "Иван",
+    "password": "IvanTheGreat1",
+    "email": "ivan.3@ya.ru"
+  },
+  {
+    "nickname": "Ольга",
+    "password": "Olga_2024!",
+    "email": "olga.4@mail.ru"
+  },
+  {
+    "nickname": "Дмитрий",
+    "password": "Dmitry#Pass7",
+    "email": "dmitry.5@list.ru"
+  },
+  {
+    "nickname": "Елена",
+    "password": "ElenaStrong12",
+    "email": "elena.6@bk.ru"
+  },
+  {
+    "nickname": "Денис",
+    "password": "Denis_Dev2024",
+    "email": "denis.7@inbox.ru"
+  },
+  {
+    "nickname": "Алексей",
+    "password": "Alex_Secret8",
+    "email": "alexey.8@xmail.ru"
+  },
+  {
+    "nickname": "Арина",
+    "password": "Arina!Play9",
+    "email": "arina.9@gmail.com"
+  },
+  {
+    "nickname": "Максим",
+    "password": "MaxPower_10",
+    "email": "maxim.10@yandex.ru"
+  },
+  {
+    "nickname": "Магомед",
+    "password": "Magomed_11!",
+    "email": "magomed.11@ya.ru"
+  },
+  {
+    "nickname": "Кантемир",
+    "password": "Kantemir#12",
+    "email": "kantemir.12@mail.ru"
+  },
+  {
+    "nickname": "Инокентий",
+    "password": "Innokentiy13",
+    "email": "innokentiy.13@list.ru"
+  },
+  {
+    "nickname": "Анастасия",
+    "password": "Nastya_2024!",
+    "email": "anastasia.14@bk.ru"
+  },
+  {
+    "nickname": "Лариса",
+    "password": "Larisa#Pass15",
+    "email": "larisa.15@inbox.ru"
+  },
+  {
+    "nickname": "Виктория",
+    "password": "Vika_Secure16",
+    "email": "victoria.16@xmail.ru"
+  },
+  {
+    "nickname": "Виктор",
+    "password": "Viktor_2024!",
+    "email": "viktor.17@gmail.com"
+  },
+  {
+    "nickname": "Михаил",
+    "password": "Mikhail#18",
+    "email": "mikhail.18@yandex.ru"
+  },
+  {
+    "nickname": "Анатолий",
+    "password": "Anatoly_Strong19",
+    "email": "anatoly.19@ya.ru"
+  },
+  {
+    "nickname": "Олег",
+    "password": "OlegTheBest20",
+    "email": "oleg.20@mail.ru"
+  },
+  {
+    "nickname": "Карина",
+    "password": "Karina!Pass21",
+    "email": "karina.21@list.ru"
+  },
+  {
+    "nickname": "Валентина",
+    "password": "Valentina_22",
+    "email": "valentina.22@bk.ru"
+  },
+  {
+    "nickname": "Фатима",
+    "password": "Fatima#Secure23",
+    "email": "fatima.23@inbox.ru"
+  },
+  {
+    "nickname": "Керим",
+    "password": "Kerim_2024!",
+    "email": "kerim.24@xmail.ru"
+  },
+  {
+    "nickname": "Кирилл",
+    "password": "Kirill#Pass25",
+    "email": "kirill.25@gmail.com"
+  }
+]
