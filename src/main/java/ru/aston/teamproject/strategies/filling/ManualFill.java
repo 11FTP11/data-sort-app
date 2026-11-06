@@ -22,12 +22,16 @@ public class ManualFill<E extends Comparable<E>> implements Strategy<E> {
 
     @Override
     public void execute(EntityStorage<E> storage) {
+        EntityStorage<E> tempStorage = new EntityStorage<>();
         try {
             IntStream.range(0, count)
                     .forEach(i -> {
                         out.println("Ввод элемента #" + (i + 1));
-                        storage.add(filler.createManual(in, out));
+                        tempStorage.add(filler.createManual(in, out));
                     });
+
+            tempStorage.stream().forEach(storage::add);
+
         } catch (Exception e) {
             out.println("\nВвод прерван или произошла ошибка: " + e.getMessage());
         }
