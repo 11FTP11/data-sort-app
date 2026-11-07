@@ -138,4 +138,20 @@ public class User implements Comparable<User> {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return scores == user.scores &&
+                java.util.Objects.equals(nickname, user.nickname) &&
+                java.util.Objects.equals(email, user.email) &&
+                java.util.Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(nickname, email, password, scores);
+    }
+
 }
