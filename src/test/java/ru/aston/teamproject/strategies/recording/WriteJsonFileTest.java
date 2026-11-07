@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.entities.User;
+import ru.aston.teamproject.ui.IoStreams;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -23,7 +24,7 @@ class WriteJsonFileTest {
         storage.add("Item1");
         storage.add("Item2");
 
-        WriteJsonFile<String> strategy = new WriteJsonFile<>(mapper, tempFile.getAbsolutePath());
+        WriteJsonFile<String> strategy = new WriteJsonFile<>(mapper, tempFile.getAbsolutePath(), new IoStreams());
 
         strategy.execute(storage);
 
@@ -36,7 +37,7 @@ class WriteJsonFileTest {
 
         ObjectMapper mapper = new ObjectMapper();
         
-        WriteJsonFile<String> strategy = new WriteJsonFile<>(mapper, null);
+        WriteJsonFile<String> strategy = new WriteJsonFile<>(mapper, null, new IoStreams());
         strategy.execute(null);
         File f = strategy.getFile();
         assertTrue(f.exists(), "file must be on disk");
@@ -48,7 +49,7 @@ class WriteJsonFileTest {
         ObjectMapper mapper = new ObjectMapper();
 
         String directoryPath = tempDir.toString();
-        WriteJsonFile<String> strategy = new WriteJsonFile<>(mapper, directoryPath);
+        WriteJsonFile<String> strategy = new WriteJsonFile<>(mapper, directoryPath, new IoStreams());
      
         assertDoesNotThrow(() -> strategy.execute(null));
     }
@@ -69,7 +70,7 @@ class WriteJsonFileTest {
         EntityStorage<User> storage = new EntityStorage<>();
         storage.add(user);
 
-        WriteJsonFile<User> strategy = new WriteJsonFile<>(mapper, tempFile.getAbsolutePath());
+        WriteJsonFile<User> strategy = new WriteJsonFile<>(mapper, tempFile.getAbsolutePath(), new IoStreams());
 
         strategy.execute(storage);
         

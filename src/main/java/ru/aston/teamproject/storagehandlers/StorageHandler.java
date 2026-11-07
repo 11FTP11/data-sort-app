@@ -1,19 +1,15 @@
 package ru.aston.teamproject.storagehandlers;
 
 import ru.aston.teamproject.collections.EntityStorage;
-
-import java.io.PrintStream;
-import java.util.Scanner;
+import ru.aston.teamproject.ui.IoStreams;
 
 public abstract class StorageHandler<E extends Comparable<E>> {
     protected final EntityStorage<E> storage;
-    protected final Scanner in;
-    protected final PrintStream out;
+    protected final IoStreams io;
 
-    public StorageHandler(EntityStorage<E> storage, Scanner scanner, PrintStream out) {
+    public StorageHandler(EntityStorage<E> storage, IoStreams io) {
         this.storage = storage;
-        this.in = scanner;
-        this.out = out;
+        this.io = io;
     }
 
     public abstract void handle();

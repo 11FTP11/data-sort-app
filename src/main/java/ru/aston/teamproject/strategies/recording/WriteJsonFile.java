@@ -5,19 +5,28 @@ import ru.aston.teamproject.collections.EntityStorage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
+
 import ru.aston.teamproject.strategies.Strategy;
+import ru.aston.teamproject.ui.IoStreams;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.io.IOException;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import java.util.Objects;
 
 public class WriteJsonFile<E extends Comparable<E>> implements Strategy<E> {
     private static final String DEFAULT_DIRECTORY = "output/";
     private final File file;
     private final ObjectMapper mapper;
+    private final IoStreams io; 
 
-    public WriteJsonFile(ObjectMapper mapper, String filename) {
+    public WriteJsonFile(ObjectMapper mapper, String filename, IoStreams io) {
+        Objects.requireNonNull(mapper, "ObjectMapper cannot be null");
+        Objects.requireNonNull(io, "IoStreams cannot be null");
         if (filename == null || filename.isBlank()) {
 
             StringBuilder sb = new StringBuilder();
@@ -32,6 +41,7 @@ public class WriteJsonFile<E extends Comparable<E>> implements Strategy<E> {
         }
 
         this.mapper = mapper;
+        this.io = io;
     }
 
     public File getFile() {
@@ -47,13 +57,13 @@ public class WriteJsonFile<E extends Comparable<E>> implements Strategy<E> {
         
         try {
             mapper.writeValue(this.file, storage);
-            System.out.printf("Данные записаны в файл \"%s\"\n", this.file);
+            this.io.out().printf("Данные записаны в файл \"%s\"\n", this.file);
         } catch (DatabindException e) {
-            System.err.println("Ошибка структуры данных: " + e.getMessage());
+            this.io.err().println("Ошибка структуры данных: " + e.getMessage());
         } catch (StreamWriteException e) {
-            System.err.println("Ошибка генерации JSON: " + e.getMessage());
+            this.io.err().println("Ошибка генерации JSON: " + e.getMessage());
         } catch (IOException e) {
-            System.err.println("Ошибка ввода-вывода: " + e.getMessage());
+            this.io.err().println("Ошибка ввода-вывода: " + e.getMessage());
         }
     }
 }

@@ -4,50 +4,47 @@ import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.storagehandlers.Description;
 import ru.aston.teamproject.storagehandlers.StorageHandler;
 import ru.aston.teamproject.ui.App;
-
-import java.util.Scanner;
+import ru.aston.teamproject.ui.IoStreams;
 
 public class Main {
     public static void main(String[] args) {
-        AppDispatcher dispatcher = new AppDispatcher();
 
         EntityStorage<String> tempStorage = new EntityStorage<>();
-        Scanner scanner = new Scanner(System.in);
+        IoStreams io = new IoStreams();
 
-        StorageHandler<String> stub1 = new StorageHandler<>(tempStorage, scanner, System.out) {
+        StorageHandler<String> stub1 = new StorageHandler<>(tempStorage, io) {
             @Override
             public void handle() {
                 System.out.println("[ЗАГЛУШКА] Ввод данных в разработке...");
             }
         };
 
-        StorageHandler<String> stub2 = new StorageHandler<>(tempStorage, scanner, System.out) {
+        StorageHandler<String> stub2 = new StorageHandler<>(tempStorage, io) {
             @Override
             public void handle() {
                 System.out.println("[ЗАГЛУШКА] Вывод данных в разработке...");
             }
         };
 
-        StorageHandler<String> stub3 = new StorageHandler<>(tempStorage, scanner, System.out) {
+        StorageHandler<String> stub3 = new StorageHandler<>(tempStorage, io) {
             @Override
             public void handle() {
                 System.out.println("[ЗАГЛУШКА] Сортировка в разработке...");
             }
         };
 
-        StorageHandler<String> stub4 = new StorageHandler<>(tempStorage, scanner, System.out) {
+        StorageHandler<String> stub4 = new StorageHandler<>(tempStorage, io) {
             @Override
             public void handle() {
                 System.out.println("[ЗАГЛУШКА] Поиск в разработке...");
             }
         };
 
-        App app = new App(dispatcher,
-                new Description("Ввод данных", stub1),
-                new Description("Вывод данных", stub2),
-                new Description("Выбор метода сортировки", stub3),
-                new Description("Поиск", stub4)
-        );
+        App app = new App(new AppDispatcher(),
+                new Description("Заполнение хранилища", stub1),
+                new Description("Вывод элементов хранилища", stub2),
+                new Description("Cортировка хранилища", stub3),
+                new Description("Поиск элемента в хранилище", stub4));
 
         app.start();
     }

@@ -9,6 +9,7 @@ import ru.aston.teamproject.strategies.sorting.SortType;
 import ru.aston.teamproject.strategies.sorting.algorithms.BubbleSort;
 import ru.aston.teamproject.strategies.sorting.algorithms.QuickSort;
 import ru.aston.teamproject.strategies.sorting.algorithms.SelectionSort;
+import ru.aston.teamproject.ui.IoStreams;
 
 import java.io.PrintStream;
 import java.util.Comparator;
@@ -22,47 +23,48 @@ public class SortStorageHandler<E extends Comparable<E>> extends StorageHandler<
 
     public SortStorageHandler(
             EntityStorage<E> storage,
-            Scanner scanner,
-            PrintStream out,
+            IoStreams io,
             List<SortField<E>> availableFields) {
-        super(storage, scanner, out);
+        super(storage, io);
         this.availableFields = availableFields;
     }
 
     @Override
     public void handle() {
         SortType[] availableSorts = SortType.values();
-        this.out.println("<===СОРТИРОВКА===>");
-        this.out.println("Выберите алгоритм сортировки:");
+        PrintStream out = this.io.out();
+        Scanner in = this.io.in();
+        out.println("<===СОРТИРОВКА===>");
+        out.println("Выберите алгоритм сортировки:");
 
         int index = 1;
         for (SortType sortType : availableSorts) {
-            this.out.printf("%d. %s%n", index++, sortType.getDescription());
+            out.printf("%d. %s%n", index++, sortType.getDescription());
         }
-        this.out.print("Выберите опцию (1-" + availableSorts.length + "): ");
+        out.print("Выберите опцию (1-" + availableSorts.length + "): ");
 
-        int sortChoice = readInt();
+        int sortChoice = readInt(out, in);
         if (sortChoice < 1 || sortChoice > availableSorts.length) {
-            this.out.println("НЕИЗВЕСТНАЯ ОПЦИЯ");
+            out.println("НЕИЗВЕСТНАЯ ОПЦИЯ");
             return;
         }
         SortType selectedSort = availableSorts[sortChoice - 1];
 
-        SortField<E> selectedField = askForField();
+        SortField<E> selectedField = askForField(out, in);
         if (selectedField == null) {
-            this.out.println("Сортировка отменена.");
+            out.println("Сортировка отменена.");
             return;
         }
 
         boolean isEvenOnly = false;
         if (selectedField.isNumeric()) {
-            this.out.print("""
-                   \s
-                    Применить дополнительную сортировку?
-                    1. Нет (сортировать всё)
-                    2. Да (сортировать только четные значения)
-                    Выберите опцию (1-2):\s""");
-            int evenOnlyChoice = readInt();
+            out.print("""
+                    \s
+                     Применить дополнительную сортировку?
+                     1. Нет (сортировать всё)
+                     2. Да (сортировать только четные значения)
+                     Выберите опцию (1-2):\s""");
+            int evenOnlyChoice = readInt(out, in);
             isEvenOnly = (evenOnlyChoice == 2);
         }
 
@@ -92,18 +94,19 @@ public class SortStorageHandler<E extends Comparable<E>> extends StorageHandler<
         }
     }
 
-    private SortField<E> askForField() {
-        this.out.println("\nПо какому полю сортировать?");
+    private SortField<E> askForField(PrintStream out,  Scanner in) {
+
+        out.println("\nПо какому полю сортировать?");
 
         int index = 1;
         for (SortField<E> field : availableFields) {
-            this.out.printf("%d. %s%n", index++, field.name());
+            out.printf("%d. %s%n", index++, field.name());
         }
 
-        this.out.printf("%d. Отмена%n", index);
-        this.out.print("Выберите опцию (1-" + index + "): ");
+        out.printf("%d. Отмена%n", index);
+        out.print("Выберите опцию (1-" + index + "): ");
 
-        int fieldChoice = readInt();
+        int fieldChoice = readInt(out, in);
 
         if (fieldChoice < 1 || fieldChoice >= index) {
             return null;
@@ -112,12 +115,12 @@ public class SortStorageHandler<E extends Comparable<E>> extends StorageHandler<
         return availableFields.get(fieldChoice - 1);
     }
 
-    private int readInt() {
+    private int readInt(PrintStream out, Scanner in) {
         while (true) {
             try {
-                return Integer.parseInt(this.in.next());
+                return Integer.parseInt(in.next());
             } catch (NumberFormatException e) {
-                this.out.print("Ошибка: введите целое число: ");
+                out.print("Ошибка: введите целое число: ");
             }
         }
     }

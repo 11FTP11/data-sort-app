@@ -7,6 +7,7 @@ import ru.aston.teamproject.strategies.filling.Fillable;
 import ru.aston.teamproject.strategies.filling.FileFill;
 import ru.aston.teamproject.strategies.filling.ManualFill;
 import ru.aston.teamproject.strategies.filling.RandomFill;
+import ru.aston.teamproject.ui.IoStreams;
 
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -18,12 +19,11 @@ public class FillStorageHandler<E extends Comparable<E>> extends StorageHandler<
 
     public FillStorageHandler(
             EntityStorage<E> storage,
-            Scanner scanner,
-            PrintStream out,
+            IoStreams io,
             Fillable<E> filler,
             ObjectMapper mapper,
             Class<E> clazz) {
-        super(storage, scanner, out);
+        super(storage, io);
         this.filler = filler;
         this.mapper = mapper;
         this.clazz = clazz;
@@ -31,36 +31,37 @@ public class FillStorageHandler<E extends Comparable<E>> extends StorageHandler<
 
     @Override
     public void handle() {
-        this.out.print("""
+        PrintStream out = this.io.out();
+        Scanner in = this.io.in();
+        out.print("""
                 <===ЗАПОЛНЕНИЕ===>
-                1. Случайными значениями
-                2. Из файла (JSON)
-                3. Вручную
-                4. Назад
+                1. Случайными значениями.
+                2. Из файла (JSON).
+                3. Вручную.
+                4. Выйти из меню заполнения.
                 Выберите опцию (1-4):\s""");
 
-        int choice = readInt();
+        int choice = readInt(out, in);
 
         EntityContext<E> context = new EntityContext<>();
 
         switch (choice) {
             case 1 -> {
-                this.out.print("Сколько элементов сгенерировать? ");
-                int count = readInt();
-                context.setStrategy(new RandomFill<>(filler, count));
+                out.print("Сколько элементов сгенерировать? ");
+                int count = readInt(out, in);
+                context.setStrategy(new RandomFill<>(filler, count, out));
             }
             case 2 -> {
-                this.out.print("Введите имя JSON-файла (в папке resources) или полный путь к файлу на диске: ");
-                String fileName = this.in.next();
-                context.setStrategy(new FileFill<>(mapper, fileName, clazz));
+                out.print("Введите имя JSON-файла (в папке resources) или полный путь к файлу на диске: ");
+                String fileName = in.next();
+                context.setStrategy(new FileFill<>(mapper, fileName, clazz, this.io));
             }
             case 3 -> {
-                this.out.print("Сколько элементов ввести вручную? ");
-                int count = readInt();
-                context.setStrategy(new ManualFill<>(filler, count, this.in, this.out));
+                out.print("Сколько элементов ввести вручную? ");
+                int count = readInt(out, in);
+                context.setStrategy(new ManualFill<>(filler, count, this.io));
             }
             default -> {
-                this.out.println("Возврат в главное меню.");
                 return;
             }
         }
@@ -68,12 +69,12 @@ public class FillStorageHandler<E extends Comparable<E>> extends StorageHandler<
         context.handle(this.storage);
     }
 
-    private int readInt() {
+    private int readInt(PrintStream out, Scanner in) {
         while (true) {
             try {
-                return Integer.parseInt(this.in.next());
+                return Integer.parseInt(in.next());
             } catch (NumberFormatException e) {
-                this.out.print("Ошибка: введите целое число: ");
+                out.print("Ошибка: введите целое число: ");
             }
         }
     }
