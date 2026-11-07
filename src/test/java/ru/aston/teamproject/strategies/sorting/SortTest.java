@@ -10,11 +10,13 @@ import ru.aston.teamproject.strategies.sorting.algorithms.QuickSort;
 import ru.aston.teamproject.strategies.sorting.algorithms.SelectionSort;
 import ru.aston.teamproject.entities.User;
 import ru.aston.teamproject.strategies.sorting.SortField;
+import ru.aston.teamproject.ui.IoStreams;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -199,7 +201,9 @@ class SortTest {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(outputStream);
 
-        SortStorageHandler<User> handler = new SortStorageHandler<>(users, scanner, out, fields);
+        IoStreams io = new IoStreams(scanner, out, out);
+
+        SortStorageHandler<User> handler = new SortStorageHandler<>(users, io, fields);
         handler.handle();
 
         assertEquals("Alex", users.get(0).getNickname());

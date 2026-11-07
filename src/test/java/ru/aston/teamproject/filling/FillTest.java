@@ -9,6 +9,7 @@ import ru.aston.teamproject.entities.User;
 import ru.aston.teamproject.strategies.filling.FileFill;
 import ru.aston.teamproject.strategies.filling.ManualFill;
 import ru.aston.teamproject.strategies.filling.RandomFill;
+import ru.aston.teamproject.ui.IoStreams;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -22,7 +23,7 @@ class FillTest {
     @DisplayName("RandomFill: генерирует указанное количество пользователей")
     void when_executeRandomFillWithCount_then_storageSizeEqualsCount() {
         EntityStorage<User> storage = new EntityStorage<>();
-        RandomFill<User> randomFill = new RandomFill<>(new User.UserBuilder(), 5);
+        RandomFill<User> randomFill = new RandomFill<>(new User.UserBuilder(), 5, System.out);
 
         randomFill.execute(storage);
 
@@ -35,7 +36,7 @@ class FillTest {
         EntityStorage<User> storage = new EntityStorage<>();
         EntityContext<User> context = new EntityContext<>();
 
-        context.setStrategy(new RandomFill<>(new User.UserBuilder(), 3));
+        context.setStrategy(new RandomFill<>(new User.UserBuilder(), 3, System.out));
         context.handle(storage);
 
         assertEquals(3, storage.size(), "Контекст должен наполнить коллекцию 3 элементами");
@@ -54,30 +55,27 @@ class FillTest {
     @Test
     @DisplayName("ManualFill: считывает данные из консоли и добавляет пользователя")
     void when_executeManualFillWithValidInput_then_userIsAdded() {
-        InputStream originalIn = System.in;
+        String simulatedInput = "Ivan\npassword123\nivan@mail.ru\n95\n";
 
-        try {
-            String simulatedInput = "Ivan\npassword123\nivan@mail.ru\n95\n";
-            System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+        ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedInput.getBytes());
+        ByteArrayOutputStream testOutBytes = new ByteArrayOutputStream();
 
-            EntityStorage<User> storage = new EntityStorage<>();
-            Scanner testScanner = new Scanner(System.in);
-            PrintStream testOut = new PrintStream(System.out);
+        IoStreams testIo = new IoStreams(
+                new Scanner(testIn),
+                new PrintStream(testOutBytes),
+                new PrintStream(testOutBytes));
 
-            ManualFill<User> manualFill = new ManualFill<>(
-                    new User.UserBuilder(), 1, testScanner, testOut
-            );
+        EntityStorage<User> storage = new EntityStorage<>();
 
-            manualFill.execute(storage);
+        ManualFill<User> manualFill = new ManualFill<>(
+                new User.UserBuilder(), 1, testIo);
 
-            assertEquals(1, storage.size(), "Должен быть добавлен 1 пользователь");
-            assertEquals("Ivan", storage.get(0).getNickname(), "Имя должно совпадать");
-            assertEquals("ivan@mail.ru", storage.get(0).getEmail(), "Email должен совпадать");
-            assertEquals(95, storage.get(0).getScores(), "Баллы должны совпадать");
+        manualFill.execute(storage);
 
-        } finally {
-            System.setIn(originalIn);
-        }
+        assertEquals(1, storage.size(), "Должен быть добавлен 1 пользователь");
+        assertEquals("Ivan", storage.get(0).getNickname(), "Имя должно совпадать");
+        assertEquals("ivan@mail.ru", storage.get(0).getEmail(), "Email должен совпадать");
+        assertEquals(95, storage.get(0).getScores(), "Баллы должны совпадать");
     }
 
     @Test
@@ -86,7 +84,7 @@ class FillTest {
         EntityStorage<User> storage = new EntityStorage<>();
         ObjectMapper mapper = new ObjectMapper();
 
-        FileFill<User> fileFill = new FileFill<>(mapper, "users.json", User.class);
+        FileFill<User> fileFill = new FileFill<>(mapper, "users.json", User.class, new IoStreams());
 
         fileFill.execute(storage);
 
@@ -115,8 +113,7 @@ class FillTest {
         EntityStorage<User> storage = new EntityStorage<>();
         ObjectMapper mapper = new ObjectMapper();
 
-
-        FileFill<User> fileFill = new FileFill<>(mapper, tempFile.getAbsolutePath(), User.class);
+        FileFill<User> fileFill = new FileFill<>(mapper, tempFile.getAbsolutePath(), User.class, new IoStreams());
 
         fileFill.execute(storage);
 

@@ -5,36 +5,61 @@ import ru.aston.teamproject.contexts.Context;
 import ru.aston.teamproject.contexts.EntityContext;
 import ru.aston.teamproject.strategies.search.ParallelSearch;
 
+import java.util.function.Predicate;
+import java.util.function.Function;
+import java.util.function.BiFunction;
+
+import ru.aston.teamproject.ui.IoStreams;
+
 import java.io.PrintStream;
 import java.util.Scanner;
 
 public class SearchStorageHandler<E extends Comparable<E>> extends StorageHandler<E> {
 
-    private final E searchElement;
     private final int threadCount;
+    private final Function<IoStreams, Predicate<E>> predFabric;
+    private final BiFunction<EntityStorage<E>, IoStreams, OutputStorageHandler<E>> outHandlerWrapper;
 
-    public SearchStorageHandler(EntityStorage<E> storage, Scanner in, PrintStream out, E searchElement, int threadCount) {
-        super(storage, in, out);
-        this.searchElement = searchElement;
+    public SearchStorageHandler(EntityStorage<E> storage, IoStreams io,
+            int threadCount, Function<IoStreams, Predicate<E>> predFabric,
+            BiFunction<EntityStorage<E>, IoStreams, OutputStorageHandler<E>> outHandlerWrapper) {
+        super(storage, io);
         this.threadCount = threadCount;
+        this.predFabric = predFabric;
+        this.outHandlerWrapper = outHandlerWrapper;
     }
 
     @Override
     public void handle() {
-        out.println("Начинается поиск элемента: " + searchElement);
-
-        ParallelSearch<E> searchStrategy = new ParallelSearch<>(searchElement, threadCount);
-
+        PrintStream out = this.io.out();
+        Scanner in = this.io.in();
         Context<E> context = new EntityContext<>();
 
-        context.setStrategy(searchStrategy);
-        context.handle(storage);
+        while (true) {
+            out.print("""
+                    <===ПОИСК===>
+                    Какой результат вам нужен?
+                    1. Посчитать количество искомых элементов.
+                    2. Вывести искомые элементы (в консоль или в файл).
+                    3. Выйти из меню поиска.
+                    Выберите опцию (1-3):\s""");
 
-        out.println("Хотите записать результат поиска в файл? (да/нет)");
-        String answer = in.next();
-        if ("да".equalsIgnoreCase(answer) || "y".equalsIgnoreCase(answer)) {
-            out.println("Здесь будет вызван OutputStorageHandler или стратегия записи для сохранения результата: "
-                    + searchStrategy.getCoincidenceCount());
+            int choice = in.nextInt();
+            switch (choice) {
+                case 1, 2 -> {
+                    out.println("Введите информацию об искомой сущности (пустые поля не будут учитываться при поиске)");
+
+                    context.setStrategy(new ParallelSearch<>(
+                            predFabric.apply(this.io),
+                            (choice == 2) ? this.outHandlerWrapper : null,
+                            threadCount, this.io));
+
+                    context.handle(storage);
+                }
+                case 3 -> {
+                    return;
+                }
+            }
         }
     }
 }

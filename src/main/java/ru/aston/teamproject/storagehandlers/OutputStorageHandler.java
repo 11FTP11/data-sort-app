@@ -4,7 +4,7 @@ import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.contexts.EntityContext;
 import ru.aston.teamproject.strategies.recording.WriteJsonFile;
 import ru.aston.teamproject.strategies.recording.WriteOutput;
-
+import ru.aston.teamproject.ui.IoStreams;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.PrintStream;
@@ -12,33 +12,53 @@ import java.util.Scanner;
 
 public class OutputStorageHandler<E extends Comparable<E>> extends StorageHandler<E> {
 
-    public OutputStorageHandler(EntityStorage<E> storage, Scanner scanner, PrintStream out) {
-        super(storage, scanner, out);
+    public OutputStorageHandler(EntityStorage<E> storage, IoStreams io) {
+        super(storage, io);
     }
 
     public void handle() {
-        this.out.print("""
-                <===ВЫВОД===>
-                Куда вывести данные?
-                1. Вывести данные на консоль.
-                2. Вывести данные в файл (создать JSON)
-                Выберите опцию (1-2):\s""");
-
+        PrintStream out = this.io.out();
+        Scanner in = this.io.in();
         EntityContext<E> context = new EntityContext<>();
 
-        switch (this.in.nextInt()) {
-            case 1:
-                context.setStrategy(new WriteOutput<>(this.out));
-                break;
-            case 2:
-                this.out.print("Введите имя JSON-файла:");
-                context.setStrategy(new WriteJsonFile<>(new ObjectMapper(), this.in.next()));
-                break;
-            default:
-                this.out.print("НЕИЗВЕСТНАЯ ОПЦИЯ");
-                return;
-        }
+        while (true) {
+            out.print("""
+                    <===ВЫВОД===>
+                    Куда вывести данные?
+                    1. Вывести данные на консоль.
+                    2. Вывести данные в файл (создать JSON).
+                    3. Выйти из меню вывода.
+                    Выберите опцию (1-3):\s""");
 
-        context.handle(storage);
+            int choice = readInt(in, out);
+
+            switch (choice) {
+                case 1 -> context.setStrategy(new WriteOutput<>(out));
+                case 2 -> {
+                    out.print("Введите имя JSON-файла: ");
+                    String fileName = in.nextLine().trim();
+                    context.setStrategy(new WriteJsonFile<>(new ObjectMapper(), fileName, this.io));
+                }
+                case 3 -> {
+                    return;
+                }
+                default -> {
+                    out.println("Неверный выбор, попробуйте снова.");
+                    continue;
+                }
+            }
+
+            context.handle(storage);
+        }
+    }
+
+    private static int readInt(Scanner in, PrintStream out) {
+        while (true) {
+            try {
+                return Integer.parseInt(in.nextLine().trim());
+            } catch (NumberFormatException e) {
+                out.print("Введите число: ");
+            }
+        }
     }
 }
