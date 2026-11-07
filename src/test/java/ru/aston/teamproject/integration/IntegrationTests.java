@@ -11,12 +11,11 @@ import ru.aston.teamproject.strategies.filling.RandomFill;
 import ru.aston.teamproject.strategies.recording.WriteJsonFile;
 import ru.aston.teamproject.strategies.search.ParallelSearch;
 import ru.aston.teamproject.strategies.sorting.algorithms.QuickSort;
+import ru.aston.teamproject.ui.IoStreams;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +26,7 @@ public class IntegrationTests {
         EntityStorage<User> users = new EntityStorage<>();
         EntityContext<User> context = new EntityContext<>();
 
-        context.setStrategy(new RandomFill<>(new User.UserBuilder(), 20));
+        context.setStrategy(new RandomFill<>(new User.UserBuilder(), 20, System.out));
         context.handle(users);
 
         Comparator<User> complexComparator = Comparator
@@ -84,17 +83,22 @@ public class IntegrationTests {
                             "Grace\npassword123\ngrace@mail.ru\n99\n";
             System.setIn(new ByteArrayInputStream(simulatedInput.getBytes(StandardCharsets.UTF_8)));
 
+            ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream testOutBytes = new ByteArrayOutputStream();
+            IoStreams testIo = new IoStreams(
+                    new Scanner(testIn),
+                    new PrintStream(testOutBytes),
+                    new PrintStream(testOutBytes));
+
             EntityStorage<User> users = new EntityStorage<>();
-            Scanner testScanner = new Scanner(System.in);
-            PrintStream testOut = new PrintStream(System.out);
 
             ManualFill<User> manualFill = new ManualFill<>(
-                    new User.UserBuilder(), 10, testScanner, testOut
+                    new User.UserBuilder(), 10, testIo
             );
 
             manualFill.execute(users);
 
-            WriteJsonFile<User> strategy = new WriteJsonFile<>(mapper, tempFile.getAbsolutePath());
+            WriteJsonFile<User> strategy = new WriteJsonFile<>(mapper, tempFile.getAbsolutePath(), testIo);
             strategy.execute(users);
             User ivan = User.builder()
                     .setNickname("Ivan")
@@ -103,7 +107,7 @@ public class IntegrationTests {
                     .setScores(95)
                     .build();
 
-            ParallelSearch<User> search = new ParallelSearch<>(ivan, 2);
+            ParallelSearch<User> search = new ParallelSearch<>(val -> val.equals(ivan), null, 2, testIo);
             search.execute(users);
             assertEquals(10, users.size(), "Должено быть добавлено 10 пользователей");
             assertTrue(tempFile.length() > 0, "Файл отсутствует");
