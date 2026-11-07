@@ -11,10 +11,12 @@ import ru.aston.teamproject.strategies.filling.RandomFill;
 import ru.aston.teamproject.strategies.recording.WriteJsonFile;
 import ru.aston.teamproject.strategies.search.ParallelSearch;
 import ru.aston.teamproject.strategies.sorting.algorithms.QuickSort;
+import ru.aston.teamproject.strategies.sorting.algorithms.SelectionSort;
 import ru.aston.teamproject.ui.IoStreams;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 
@@ -22,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class IntegrationTests {
     @Test
+    @DisplayName("Создание 20 рандомных записей, сортировка по никнейму, и обратная сортировка по очкам у однофамильцев")
     void when_fillRandomDataAndSortingScenario_then_storageIsSortiedCorrectlyNameAscScoresDesc() {
         EntityStorage<User> users = new EntityStorage<>();
         EntityContext<User> context = new EntityContext<>();
@@ -114,6 +117,34 @@ public class IntegrationTests {
             assertEquals(3, search.getCoincidenceCount(), "Должно быть найдено ровно 3 одинаковых элемента (Ивана)");
         } finally {
             System.setIn(inStream);
+        }
+    }
+    @Test
+    @DisplayName("Чтение из файла, сортировка записей по четным scores")
+    void when_readFromJsonEvenOnlySorted_then_evenOnlySortedCollection() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("users.json")){
+            assertNotNull(is, "Файл users.json отсутствует в ресурсах");
+
+
+            EntityStorage<User> users = new EntityStorage<>();
+            users.addAll(Arrays.asList(mapper.readValue(is, User[].class)));
+            assertFalse(users.isEmpty(), "Коллекция не должна быть пустой после чтения");
+            assertEquals(25, users.size(), "В коллекции должно быть 25 элементов");
+
+            SelectionSort<User> sorter = new SelectionSort<>();
+            sorter.sortEvenOnly(users, Comparator.naturalOrder(), User::getScores);
+
+            int lastEven = -1;
+            for (User u : users) {
+                if ((u.getScores() & 1) == 0) {
+                    assertTrue(u.getScores() >= lastEven,
+                            "Четные значения должны идти по возрастанию! Нарушение на: " + u.getScores());
+                    lastEven = u.getScores();
+                }
+            }
+            assertEquals(25, users.size(), "Сортировка не должна менять размер коллекции");
         }
     }
 }
