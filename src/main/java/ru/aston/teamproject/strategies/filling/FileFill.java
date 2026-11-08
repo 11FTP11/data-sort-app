@@ -44,14 +44,16 @@ public class FileFill<E extends Comparable<E>> implements Strategy<E> {
             }
 
             if (inputStream == null) {
-                throw new RuntimeException("Файл не найден ни на диске, ни в ресурсах: " + fileName);
+                this.io.err().println("Файл не найден ни на диске, ни в ресурсах: " + fileName);
+                return;
             }
 
             JavaType listType = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
             List<E> entities = mapper.readValue(inputStream, listType);
 
             if (entities == null || entities.isEmpty()) {
-                throw new RuntimeException("Файл пуст или не содержит данных.");
+                this.io.err().println("Файл пуст или не содержит данных.");
+                return;
             }
 
             entities.stream().forEach(storage::add);
