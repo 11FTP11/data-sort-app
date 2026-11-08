@@ -68,8 +68,9 @@ public class FillStorageHandler<E extends Comparable<E>> extends StorageHandler<
 
     private int readInt(PrintStream out, Scanner in) {
         while (true) {
+            String line = in.hasNextLine() ? in.nextLine().trim() : "";
             try {
-                return Integer.parseInt(in.next());
+                return Integer.parseInt(line);
             } catch (NumberFormatException e) {
                 out.print("Ошибка: введите целое число: ");
             }

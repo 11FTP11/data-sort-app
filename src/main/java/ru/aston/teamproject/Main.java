@@ -47,7 +47,7 @@ public class Main {
                 io, THREADS_COUNT,
                 (localIo) -> {
                     Predicate<User> pred = user -> true;
-                    User u = User.builder().createManual(localIo.in(), localIo.out());
+                    User u = User.builder(false).createManual(localIo.in(), localIo.out());
                     if (!u.getNickname().isBlank()) { pred = pred.and((target) -> target.getNickname().equals(u.getNickname())); }
                     if (!u.getPassword().isBlank()) { pred = pred.and((target) -> target.getPassword().equals(u.getPassword())); }
                     if (!u.getEmail().isBlank()) { pred = pred.and((target) -> target.getEmail().equals(u.getEmail())); }
