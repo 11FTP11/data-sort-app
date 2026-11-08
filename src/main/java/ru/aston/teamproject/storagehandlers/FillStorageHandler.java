@@ -14,18 +14,15 @@ import java.util.Scanner;
 
 public class FillStorageHandler<E extends Comparable<E>> extends StorageHandler<E> {
     private final Fillable<E> filler;
-    private final ObjectMapper mapper;
     private final Class<E> clazz;
 
     public FillStorageHandler(
             EntityStorage<E> storage,
             IoStreams io,
             Fillable<E> filler,
-            ObjectMapper mapper,
             Class<E> clazz) {
         super(storage, io);
         this.filler = filler;
-        this.mapper = mapper;
         this.clazz = clazz;
     }
 
@@ -54,7 +51,7 @@ public class FillStorageHandler<E extends Comparable<E>> extends StorageHandler<
             case 2 -> {
                 out.print("Введите имя JSON-файла (в папке resources) или полный путь к файлу на диске: ");
                 String fileName = in.next();
-                context.setStrategy(new FileFill<>(mapper, fileName, clazz, this.io));
+                context.setStrategy(new FileFill<>(new ObjectMapper(), fileName, clazz, this.io));
             }
             case 3 -> {
                 out.print("Сколько элементов ввести вручную? ");
