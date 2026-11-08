@@ -25,6 +25,10 @@ public class User implements Comparable<User> {
     public static UserBuilder builder() {
         return new UserBuilder();
     }
+    
+    public static UserBuilder builder(boolean strict) {
+        return new UserBuilder(strict);
+    }
 
     public String getNickname() {
         return nickname;
@@ -73,40 +77,55 @@ public class User implements Comparable<User> {
         String nickname;
         String password;
         String email;
+        boolean strict;
         int scores;
 
+        public UserBuilder(boolean strict) {
+            this.strict = strict;
+        }
+        
+        public UserBuilder() {
+            this.strict = true;
+        }
+
         public UserBuilder setNickname(String nickname) {
-            if (nickname == null || nickname.isBlank()) {
-                throw new IllegalArgumentException("Nickname must not be null or empty");
+            if (this.strict && (nickname == null || nickname.isBlank())) {
+                throw new IllegalArgumentException("Nickname не должен быть пустым");
             }
             this.nickname = nickname;
             return this;
         }
 
         public UserBuilder setPassword(String password) {
-            if (password == null || password.isBlank()) {
-                throw new IllegalArgumentException("Password must not be null or empty");
+            if (this.strict && (password == null || password.isBlank() || password.length() < 5)) {
+                throw new IllegalArgumentException("Password должен состоять минимум из 5 символов");
             }
             this.password = password;
             return this;
         }
 
         public UserBuilder setEmail(String email) {
-            if (email == null || email.isBlank()) {
-                throw new IllegalArgumentException("Email must not be null or empty");
+            if (this.strict && (email == null || email.isBlank())) {
+                throw new IllegalArgumentException("Email не должен быть пустым");
             }
-            if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
-                throw new IllegalArgumentException("Invalid email format: " + email);
+            if (this.strict && !email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+                throw new IllegalArgumentException("Неверный формат email: " + email);
             }
             this.email = email;
             return this;
         }
 
         public UserBuilder setScores(Integer scores) {
-            if (scores == null) {
-                throw new IllegalArgumentException("Scores must not be null or empty");
+            if (this.strict && scores == null) {
+                throw new IllegalArgumentException("Scores не должен быть пустым");
             }
-            this.scores = Math.clamp(scores, 0, 100);
+
+            if (scores != null) {
+                this.scores = Math.clamp(scores, 0, 100);                
+            } else {
+                this.scores = -1;
+            }
+
             return this;
         }
 
@@ -123,13 +142,18 @@ public class User implements Comparable<User> {
         @Override
         public User createManual(Scanner in, PrintStream out) {
             out.print("Введите Nickname: ");
-            this.setNickname(in.nextLine());
+            this.setNickname(in.nextLine().trim());
             out.print("Введите Password (мин. 5 символов): ");
-            this.setPassword(in.nextLine());
+            this.setPassword(in.nextLine().trim());
             out.print("Введите Email: ");
-            this.setEmail(in.nextLine());
+            this.setEmail(in.nextLine().trim());
             out.print("Введите Scores (0-100): ");
-            this.setScores(Integer.parseInt(in.nextLine()));
+            String scores = in.nextLine().trim();
+            if (scores.isBlank()) {
+                this.setScores(null);
+            } else {
+                this.setScores(Integer.parseInt(scores));
+            }
             return this.build();
         }
 
