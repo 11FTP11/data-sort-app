@@ -3,7 +3,6 @@ package ru.aston.teamproject.storagehandlers;
 import ru.aston.teamproject.collections.EntityStorage;
 import ru.aston.teamproject.contexts.EntityContext;
 import ru.aston.teamproject.strategies.Strategy;
-
 import ru.aston.teamproject.strategies.sorting.SortField;
 import ru.aston.teamproject.strategies.sorting.SortType;
 import ru.aston.teamproject.strategies.sorting.algorithms.BubbleSort;
@@ -31,9 +30,49 @@ public class SortStorageHandler<E extends Comparable<E>> extends StorageHandler<
 
     @Override
     public void handle() {
-        SortType[] availableSorts = SortType.values();
         PrintStream out = this.io.out();
         Scanner in = this.io.in();
+
+        while (true) {
+            SortType selectedSort = chooseSortType(out, in);
+            if (selectedSort == null) {
+                return;
+            }
+
+            SortField<E> selectedField = chooseSortField(out, in);
+            if (selectedField == null) {
+                continue;
+            }
+
+            boolean isEvenOnly = false;
+            if (selectedField.isNumeric()) {
+                out.print("""
+                        \s
+                         Применить дополнительную сортировку?
+                         1. Нет (сортировать всё)
+                         2. Да (сортировать только четные значения)
+                         3. Назад
+                         Выберите опцию (1-3):\s""");
+                int evenOnlyChoice = readInt(out, in);
+
+                if (evenOnlyChoice == 3) {
+                    continue;
+                }
+                isEvenOnly = (evenOnlyChoice == 2);
+            }
+
+            if (isEvenOnly) {
+                performEvenOnlySort(out, selectedSort, selectedField);
+            } else {
+                performStandardSort(out, selectedSort, selectedField);
+            }
+
+            return;
+        }
+    }
+
+    private SortType chooseSortType(PrintStream out, Scanner in) {
+        SortType[] availableSorts = SortType.values();
         out.println("<===СОРТИРОВКА===>");
         out.println("Выберите алгоритм сортировки:");
 
@@ -41,87 +80,72 @@ public class SortStorageHandler<E extends Comparable<E>> extends StorageHandler<
         for (SortType sortType : availableSorts) {
             out.printf("%d. %s%n", index++, sortType.getDescription());
         }
-        out.print("Выберите опцию (1-" + availableSorts.length + "): ");
+        out.printf("%d. Выход%n", index);
+        out.print("Выберите опцию (1-" + index + "): ");
 
         int sortChoice = readInt(out, in);
+        if (sortChoice == index) {
+            return null;
+        }
         if (sortChoice < 1 || sortChoice > availableSorts.length) {
             out.println("НЕИЗВЕСТНАЯ ОПЦИЯ");
-            return;
+            return null;
         }
-        SortType selectedSort = availableSorts[sortChoice - 1];
-
-        SortField<E> selectedField = askForField(out, in);
-        if (selectedField == null) {
-            out.println("Сортировка отменена.");
-            return;
-        }
-
-        boolean isEvenOnly = false;
-        if (selectedField.isNumeric()) {
-            out.print("""
-                    \s
-                     Применить дополнительную сортировку?
-                     1. Нет (сортировать всё)
-                     2. Да (сортировать только четные значения)
-                     Выберите опцию (1-2):\s""");
-            int evenOnlyChoice = readInt(out, in);
-            isEvenOnly = (evenOnlyChoice == 2);
-        }
-
-        if (isEvenOnly) {
-            performEvenOnlySort(selectedSort, selectedField.numberExtractor());
-        } else {
-            performStandardSort(selectedSort, selectedField.comparator());
-        }
+        return availableSorts[sortChoice - 1];
     }
 
-    private void performStandardSort(SortType selectedSort, Comparator<E> comparator) {
+    private SortField<E> chooseSortField(PrintStream out, Scanner in) {
+        out.println("\nВыберите поле для сортировки:");
+
+        int index = 1;
+        for (SortField<E> field : availableFields) {
+            out.printf("%d. %s%n", index++, field.name());
+        }
+        out.printf("%d. Назад%n", index);
+        out.print("Выберите опцию (1-" + index + "): ");
+
+        int fieldChoice = readInt(out, in);
+        if (fieldChoice == index) {
+            return null;
+        }
+        if (fieldChoice < 1 || fieldChoice >= index) {
+            out.println("НЕИЗВЕСТНАЯ ОПЦИЯ");
+            return null;
+        }
+        return availableFields.get(fieldChoice - 1);
+    }
+
+    private void performStandardSort(PrintStream out, SortType selectedSort, SortField<E> field) {
         @SuppressWarnings("unchecked")
-        Strategy<E> strategy = (Strategy<E>) selectedSort.createStrategy(comparator);
+        Strategy<E> strategy = (Strategy<E>) selectedSort.createStrategy(field.comparator());
 
         EntityContext<E> context = new EntityContext<>();
         context.setStrategy(strategy);
         context.handle(this.storage);
+
+        StringBuilder message = new StringBuilder();
+        message.append("\nКоллекция отсортирована.\n")
+                .append("Алгоритм: ").append(selectedSort.getDescription()).append("\n")
+                .append("Поле: ").append(field.name());
+
+        out.print(message);
     }
 
-    private void performEvenOnlySort(SortType selectedSort, ToIntFunction<E> numberExtractor) {
+    private void performEvenOnlySort(PrintStream out, SortType selectedSort, SortField<E> field) {
         Comparator<Integer> naturalIntComparator = Comparator.naturalOrder();
+        ToIntFunction<E> numberExtractor = field.numberExtractor();
 
         switch (selectedSort) {
             case BUBBLE -> new BubbleSort<E>().sortEvenOnly(this.storage, naturalIntComparator, numberExtractor);
             case SELECTION -> new SelectionSort<E>().sortEvenOnly(this.storage, naturalIntComparator, numberExtractor);
             case QUICK -> new QuickSort<E>().sortEvenOnly(this.storage, naturalIntComparator, numberExtractor);
         }
-    }
 
-    private SortField<E> askForField(PrintStream out,  Scanner in) {
+        StringBuilder message = new StringBuilder();
+        message.append("\nВ коллекции были отсортировны только четные значения.\n")
+                .append("Алгоритм: ").append(selectedSort.getDescription()).append("\n")
+                .append("Поле: ").append(field.name());
 
-        out.println("\nПо какому полю сортировать?");
-
-        int index = 1;
-        for (SortField<E> field : availableFields) {
-            out.printf("%d. %s%n", index++, field.name());
-        }
-
-        out.printf("%d. Отмена%n", index);
-        out.print("Выберите опцию (1-" + index + "): ");
-
-        int fieldChoice = readInt(out, in);
-
-        if (fieldChoice < 1 || fieldChoice >= index) {
-            return null;
-        }
-
-        return availableFields.get(fieldChoice - 1);
-    }
-
-    private int readInt(PrintStream out, Scanner in) {
-        while (true) {
-            try {
-                return Integer.parseInt(in.next());
-            } catch (NumberFormatException e) {
-                out.print("Ошибка: введите целое число: ");
-            }
-        }
+        out.print(message);
     }
 }
