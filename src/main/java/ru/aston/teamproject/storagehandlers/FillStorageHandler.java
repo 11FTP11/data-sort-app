@@ -50,7 +50,7 @@ public class FillStorageHandler<E extends Comparable<E>> extends StorageHandler<
             }
             case 2 -> {
                 out.print("Введите имя JSON-файла (в папке resources) или полный путь к файлу на диске: ");
-                String fileName = in.next();
+                String fileName = in.nextLine().trim();
                 context.setStrategy(new FileFill<>(new ObjectMapper(), fileName, clazz, this.io));
             }
             case 3 -> {
