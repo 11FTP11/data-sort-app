@@ -97,7 +97,7 @@ public class User implements Comparable<User> {
         }
 
         public UserBuilder setPassword(String password) {
-            if (this.strict && (password == null || password.isBlank() || password.length() <= 5)) {
+            if (this.strict && (password == null || password.isBlank() || password.length() < 5)) {
                 throw new IllegalArgumentException("Password должен состоять минимум из 5 символов");
             }
             this.password = password;
