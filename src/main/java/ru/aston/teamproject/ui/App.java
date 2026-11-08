@@ -3,13 +3,26 @@ package ru.aston.teamproject.ui;
 import ru.aston.teamproject.AppDispatcher;
 import ru.aston.teamproject.storagehandlers.Description;
 
-public class App {
-    private final ConsoleUI ui = new ConsoleUI();
-    private final AppDispatcher dispatcher;
-    private final String[] menuItems;
+import java.util.Objects;
 
-    public App(AppDispatcher dispatcher, Description... descriptions) {
-        this.dispatcher = dispatcher;
+import java.io.PrintStream;
+
+public class App {
+    private final ConsoleUI ui;
+    private final AppDispatcher dispatcher;
+    private String[] menuItems;
+    private final IoStreams io;
+
+    public App(IoStreams io, String headerInfo, AppDispatcher dispatcher) {
+        this.io = Objects.requireNonNull(io, "io cannot be null");
+        headerInfo = Objects.requireNonNull(headerInfo, "headerInfo cannot be null");
+        this.dispatcher = Objects.requireNonNull(dispatcher, "dispatcher cannot be null");
+        
+        this.menuItems = null;
+        this.ui = new ConsoleUI(io, headerInfo);
+    }
+
+    public void linkAll(Description... descriptions) {
         this.menuItems = new String[descriptions.length];
 
         for (int i = 0; i < descriptions.length; i++) {
@@ -21,12 +34,12 @@ public class App {
     public void start() {
         ui.printHeader();
         boolean isRunning = true;
-
+        PrintStream out = this.io.out();
         while (isRunning) {
-            System.out.println("\n" + "\u001B[1m[ГЛАВНОЕ МЕНЮ]\u001B[0m");
+            out.println("\n" + "\u001B[1m[ГЛАВНОЕ МЕНЮ]\u001B[0m");
 
             for (int i = 0; i < menuItems.length; i++) {
-                System.out.println((i + 1) + ". " + menuItems[i]);
+                out.println((i + 1) + ". " + menuItems[i]);
             }
             System.out.println("0. Выход");
             System.out.println("\u001B[36m" + "-".repeat(80) + "\u001B[0m");
@@ -35,7 +48,7 @@ public class App {
 
             if (choice == 0) {
                 isRunning = false;
-                System.out.println("Завершение работы программы.");
+                out.println("Завершение работы программы.");
             } else {
                 int result = dispatcher.resolve(choice);
                 if (result == -1) {

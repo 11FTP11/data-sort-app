@@ -44,7 +44,7 @@ public class SearchStorageHandler<E extends Comparable<E>> extends StorageHandle
                     3. Выйти из меню поиска.
                     Выберите опцию (1-3):\s""");
 
-            int choice = in.nextInt();
+            int choice = readInt(out, in);
             switch (choice) {
                 case 1, 2 -> {
                     out.println("Введите информацию об искомой сущности (пустые поля не будут учитываться при поиске)");
@@ -55,10 +55,22 @@ public class SearchStorageHandler<E extends Comparable<E>> extends StorageHandle
                             threadCount, this.io));
 
                     context.handle(storage);
+                    return;
                 }
                 case 3 -> {
                     return;
                 }
+            }
+        }
+    }
+
+    private int readInt(PrintStream out, Scanner in) {
+        while (true) {
+            String line = in.hasNextLine() ? in.nextLine().trim() : "";
+            try {
+                return Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                out.print("Ошибка: введите целое число: ");
             }
         }
     }

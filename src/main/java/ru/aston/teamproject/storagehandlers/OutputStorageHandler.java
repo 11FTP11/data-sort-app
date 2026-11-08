@@ -40,15 +40,15 @@ public class OutputStorageHandler<E extends Comparable<E>> extends StorageHandle
                     context.setStrategy(new WriteJsonFile<>(new ObjectMapper(), fileName, this.io));
                 }
                 case 3 -> {
-                    return;
+                    break;
                 }
                 default -> {
-                    out.println("Неверный выбор, попробуйте снова.");
                     continue;
                 }
             }
 
             context.handle(storage);
+            break;
         }
     }
 
