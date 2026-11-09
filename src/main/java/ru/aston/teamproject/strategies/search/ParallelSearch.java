@@ -6,6 +6,7 @@ import ru.aston.teamproject.ui.IoStreams;
 import ru.aston.teamproject.storagehandlers.OutputStorageHandler;
 
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import java.util.function.BiFunction;
 
 import java.util.Objects;
@@ -68,21 +69,17 @@ public class ParallelSearch<E extends Comparable<E>> implements Strategy<E> {
     }
 
     private void searchSequentially(EntityStorage<E> storage, int startIndex, int endIndex) {
-        int localCount = 0;
         EntityStorage<E> localArr = new EntityStorage<>();
-        for (int i = startIndex; i < endIndex; i++) {
-            E value = storage.get(i);
-            if (this.pred.test(value)) {
-                localArr.add(value);
-                localCount++;
-            }
-        }
+        IntStream.range(startIndex, endIndex)
+                .mapToObj(storage::get)
+                .filter(this.pred)
+                .forEach(localArr::add);
+
         synchronized (countLock) {
+            this.coincidenceCount += localArr.size();
             if (this.outHandlerWrapper != null) {
                 this.coincidenceArr.addAll(localArr);
             }
-
-            this.coincidenceCount += localCount;
         }
     }
 
