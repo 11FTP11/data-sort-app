@@ -1,0 +1,152 @@
+[
+  {
+    "nickname": "Марк",
+    "password": "Mark!2024xyz",
+    "email": "mark.1@gmail.com",
+    "scores": 85
+  },
+  {
+    "nickname": "Мария",
+    "password": "M@ria_Secure99",
+    "email": "maria.2@yandex.ru",
+    "scores": 92
+  },
+  {
+    "nickname": "Иван",
+    "password": "IvanTheGreat1",
+    "email": "ivan.3@ya.ru",
+    "scores": 67
+  },
+  {
+    "nickname": "Ольга",
+    "password": "Olga_2024!",
+    "email": "olga.4@mail.ru",
+    "scores": 78
+  },
+  {
+    "nickname": "Дмитрий",
+    "password": "Dmitry#Pass7",
+    "email": "dmitry.5@list.ru",
+    "scores": 55
+  },
+  {
+    "nickname": "Елена",
+    "password": "ElenaStrong12",
+    "email": "elena.6@bk.ru",
+    "scores": 100
+  },
+  {
+    "nickname": "Денис",
+    "password": "Denis_Dev2024",
+    "email": "denis.7@inbox.ru",
+    "scores": 42
+  },
+  {
+    "nickname": "Алексей",
+    "password": "Alex_Secret8",
+    "email": "alexey.8@xmail.ru",
+    "scores": 88
+  },
+  {
+    "nickname": "Арина",
+    "password": "Arina!Play9",
+    "email": "arina.9@gmail.com",
+    "scores": 61
+  },
+  {
+    "nickname": "Максим",
+    "password": "MaxPower_10",
+    "email": "maxim.10@yandex.ru",
+    "scores": 73
+  },
+  {
+    "nickname": "Магомед",
+    "password": "Magomed_11!",
+    "email": "magomed.11@ya.ru",
+    "scores": 95
+  },
+  {
+    "nickname": "Кантемир",
+    "password": "Kantemir#12",
+    "email": "kantemir.12@mail.ru",
+    "scores": 48
+  },
+  {
+    "nickname": "Инокентий",
+    "password": "Innokentiy13",
+    "email": "innokentiy.13@list.ru",
+    "scores": 33
+  },
+  {
+    "nickname": "Анастасия",
+    "password": "Nastya_2024!",
+    "email": "anastasia.14@bk.ru",
+    "scores": 99
+  },
+  {
+    "nickname": "Лариса",
+    "password": "Larisa#Pass15",
+    "email": "larisa.15@inbox.ru",
+    "scores": 82
+  },
+  {
+    "nickname": "Виктория",
+    "password": "Vika_Secure16",
+    "email": "victoria.16@xmail.ru",
+    "scores": 76
+  },
+  {
+    "nickname": "Виктор",
+    "password": "Viktor_2024!",
+    "email": "viktor.17@gmail.com",
+    "scores": 51
+  },
+  {
+    "nickname": "Михаил",
+    "password": "Mikhail#18",
+    "email": "mikhail.18@yandex.ru",
+    "scores": 68
+  },
+  {
+    "nickname": "Анатолий",
+    "password": "Anatoly_Strong19",
+    "email": "anatoly.19@ya.ru",
+    "scores": 44
+  },
+  {
+    "nickname": "Олег",
+    "password": "OlegTheBest20",
+    "email": "oleg.20@mail.ru",
+    "scores": 90
+  },
+  {
+    "nickname": "Карина",
+    "password": "Karina!Pass21",
+    "email": "karina.21@list.ru",
+    "scores": 57
+  },
+  {
+    "nickname": "Валентина",
+    "password": "Valentina_22",
+    "email": "valentina.22@bk.ru",
+    "scores": 69
+  },
+  {
+    "nickname": "Фатима",
+    "password": "Fatima#Secure23",
+    "email": "fatima.23@inbox.ru",
+    "scores": 84
+  },
+  {
+    "nickname": "Керим",
+    "password": "Kerim_2024!",
+    "email": "kerim.24@xmail.ru",
+    "scores": 37
+  },
+  {
+    "nickname": "Кирилл",
+    "password": "Kirill#Pass25",
+    "email": "kirill.25@gmail.com",
+    "scores": 80
+  }
+]
