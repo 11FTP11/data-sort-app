@@ -1,4 +1,4 @@
-package ru.aston.teamproject;
+package ru.aston.teamproject.app;
 
 import ru.aston.teamproject.storagehandlers.StorageHandler;
 

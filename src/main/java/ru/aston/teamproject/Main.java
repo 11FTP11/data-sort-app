@@ -13,16 +13,18 @@ import ru.aston.teamproject.storagehandlers.FillStorageHandler;
 import ru.aston.teamproject.storagehandlers.SearchStorageHandler;
 import ru.aston.teamproject.storagehandlers.SortStorageHandler;
 
+import ru.aston.teamproject.app.App;
+import ru.aston.teamproject.app.AppDispatcher;
+
 import java.util.function.Predicate;
 
 import java.util.Comparator;
 import java.util.List;
 
-import ru.aston.teamproject.ui.App;
 import ru.aston.teamproject.ui.IoStreams;
 
 public class Main {
-    private static int THREADS_COUNT = 6;
+    private static final int THREADS_COUNT = 6;
 
     public static void main(String[] args) {
 
@@ -40,6 +42,7 @@ public class Main {
                 userStorage, io,
                 List.of(
                         new SortField<>("По никнейму", Comparator.comparing(User::getNickname), false, null),
+                        new SortField<>("По паролю", Comparator.comparing(User::getPassword), false, null),
                         new SortField<>("По Email", Comparator.comparing(User::getEmail), false, null),
                         new SortField<>("По баллам", Comparator.comparingInt(User::getScores), true, User::getScores)));
 
