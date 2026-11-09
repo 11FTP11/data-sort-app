@@ -1,7 +1,9 @@
-package ru.aston.teamproject.ui;
+package ru.aston.teamproject.app;
 
-import ru.aston.teamproject.AppDispatcher;
 import ru.aston.teamproject.storagehandlers.Description;
+
+import ru.aston.teamproject.ui.IoStreams;
+import ru.aston.teamproject.ui.ConsoleUI;
 
 import java.util.Objects;
 
@@ -41,8 +43,8 @@ public class App {
             for (int i = 0; i < menuItems.length; i++) {
                 out.println((i + 1) + ". " + menuItems[i]);
             }
-            System.out.println("0. Выход");
-            System.out.println("\u001B[36m" + "-".repeat(80) + "\u001B[0m");
+            out.println("0. Выход");
+            out.println("\u001B[36m" + "-".repeat(80) + "\u001B[0m");
 
             int choice = ui.readInt("Выберите действие: ", 0, menuItems.length);
 
