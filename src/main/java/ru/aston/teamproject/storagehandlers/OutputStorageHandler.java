@@ -30,7 +30,7 @@ public class OutputStorageHandler<E extends Comparable<E>> extends StorageHandle
                     3. Выйти из меню вывода.
                     Выберите опцию (1-3):\s""");
 
-            int choice = readInt(in, out);
+            int choice = readInt(out, in);
 
             switch (choice) {
                 case 1 -> context.setStrategy(new WriteOutput<>(out));
@@ -49,16 +49,6 @@ public class OutputStorageHandler<E extends Comparable<E>> extends StorageHandle
 
             context.handle(storage);
             break;
-        }
-    }
-
-    private static int readInt(Scanner in, PrintStream out) {
-        while (true) {
-            try {
-                return Integer.parseInt(in.nextLine().trim());
-            } catch (NumberFormatException e) {
-                out.print("Введите число: ");
-            }
         }
     }
 }
